@@ -81,7 +81,7 @@ public:
     }
     void buildTriangle(ShaderProgram program){
         
-        if(vertices == NULL){
+        if(vertices == NULL) {
             printf("Error. Stop immediately!");
         }
         else{
@@ -242,6 +242,7 @@ int main(int argc, char *argv[])
         glEnable(GL_BLEND);
         
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        
         float lastFrameTicks = 0.0f;
         
         float ticks = (float)SDL_GetTicks()/1000.0f;
