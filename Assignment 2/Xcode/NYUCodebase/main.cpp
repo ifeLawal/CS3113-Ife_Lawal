@@ -121,7 +121,7 @@ bool collision (gamePiece obj1, gamePiece obj2, bool collisionLeft) {
     }
     if(!collisionLeft && obj1Left < obj2Right) {
         printf("working\n");
-        if(obj1Top > obj2Top && obj1Bottom < obj2Bottom) {
+        if(!(obj1Top < obj2Bottom || obj1Bottom > obj2Top)) {
             printf("%f,", obj1Top);
             printf("%f,", obj2Top);
             printf("%f,", obj1Bottom);
