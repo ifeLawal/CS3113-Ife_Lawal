@@ -238,6 +238,9 @@ int main(int argc, char *argv[])
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 Mix_FreeMusic(music);
+                Mix_FreeChunk(tester1.someSound);
+                Mix_FreeChunk(tester2.someSound);
+                Mix_FreeChunk(tester3.someSound);
                 done = true;
             }
         }
