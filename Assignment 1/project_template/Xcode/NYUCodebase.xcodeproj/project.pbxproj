@@ -10,6 +10,13 @@
 		41298A281D98C58A00A367F2 /* MyPixelRain.png in Resources */ = {isa = PBXBuildFile; fileRef = 41298A271D98C58A00A367F2 /* MyPixelRain.png */; };
 		41298A2A1D98C61500A367F2 /* Emoji.png in Resources */ = {isa = PBXBuildFile; fileRef = 41298A291D98C61500A367F2 /* Emoji.png */; };
 		41298A2C1D98C79300A367F2 /* MyPixelRain2.png in Resources */ = {isa = PBXBuildFile; fileRef = 41298A2B1D98C79300A367F2 /* MyPixelRain2.png */; };
+		4135B1F41DDD6A4D003E3522 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4135B1F31DDD6A4D003E3522 /* SDL2_mixer.framework */; };
+		4135B1F61DDD6AE7003E3522 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4135B1F51DDD6AE7003E3522 /* SDL2_image.framework */; };
+		4135B1F81DDD953E003E3522 /* Music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4135B1F71DDD953E003E3522 /* Music.mp3 */; };
+		4135B1FA1DDD9642003E3522 /* Music.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4135B1F91DDD9642003E3522 /* Music.wav */; };
+		4135B1FC1DDD9807003E3522 /* Rain.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4135B1FB1DDD9807003E3522 /* Rain.mp3 */; };
+		4135B1FF1DDD989A003E3522 /* MixerSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4135B1FD1DDD989A003E3522 /* MixerSound.cpp */; };
+		4135B2011DDD9C9B003E3522 /* RainDrop.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4135B2001DDD9C9B003E3522 /* RainDrop.wav */; };
 		41F2B3A61D92D7800078CE2F /* imageSetup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F2B3A51D92D7800078CE2F /* imageSetup.cpp */; };
 		6D5A86AE19AE5C710066C1FD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D5A86AD19AE5C710066C1FD /* Cocoa.framework */; };
 		6D5A86B819AE5C710066C1FD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D5A86B619AE5C710066C1FD /* InfoPlist.strings */; };
@@ -18,7 +25,6 @@
 		6D5A86C619AE5C710066C1FD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D5A86C519AE5C710066C1FD /* Images.xcassets */; };
 		6D5A86E319AE5CD10066C1FD /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D5A86E219AE5CD10066C1FD /* SDL2.framework */; };
 		6D5AC2D019AE6280004CB1BF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D5AC2CF19AE6280004CB1BF /* OpenGL.framework */; };
-		6D5AC2D219AE6A1E004CB1BF /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D5AC2D119AE6A1E004CB1BF /* SDL2_image.framework */; };
 		6DC7076A1BA7273500225B7D /* vertex_textured.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 6DC707691BA7273500225B7D /* vertex_textured.glsl */; };
 		6DE9D2F11BA6AB8C002D599C /* fragment_textured.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 6DE9D2F01BA6AB8C002D599C /* fragment_textured.glsl */; };
 		6DEF23C11B96CC2600BCE792 /* fragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 6DEF23BB1B96CC2600BCE792 /* fragment.glsl */; };
@@ -31,6 +37,14 @@
 		41298A271D98C58A00A367F2 /* MyPixelRain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MyPixelRain.png; sourceTree = "<group>"; };
 		41298A291D98C61500A367F2 /* Emoji.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Emoji.png; sourceTree = "<group>"; };
 		41298A2B1D98C79300A367F2 /* MyPixelRain2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MyPixelRain2.png; sourceTree = "<group>"; };
+		4135B1F31DDD6A4D003E3522 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_mixer.framework; sourceTree = "<group>"; };
+		4135B1F51DDD6AE7003E3522 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_image.framework; sourceTree = "<group>"; };
+		4135B1F71DDD953E003E3522 /* Music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Music.mp3; sourceTree = "<group>"; };
+		4135B1F91DDD9642003E3522 /* Music.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Music.wav; sourceTree = "<group>"; };
+		4135B1FB1DDD9807003E3522 /* Rain.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Rain.mp3; sourceTree = "<group>"; };
+		4135B1FD1DDD989A003E3522 /* MixerSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MixerSound.cpp; sourceTree = "<group>"; };
+		4135B1FE1DDD989A003E3522 /* MixerSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixerSound.h; sourceTree = "<group>"; };
+		4135B2001DDD9C9B003E3522 /* RainDrop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = RainDrop.wav; sourceTree = "<group>"; };
 		41F2B3A51D92D7800078CE2F /* imageSetup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imageSetup.cpp; sourceTree = "<group>"; };
 		6D5A86AA19AE5C710066C1FD /* NYUCodebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NYUCodebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D5A86AD19AE5C710066C1FD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -46,7 +60,6 @@
 		6D5A86D519AE5C710066C1FD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6D5A86E219AE5CD10066C1FD /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		6D5AC2CF19AE6280004CB1BF /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		6D5AC2D119AE6A1E004CB1BF /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
 		6DC707691BA7273500225B7D /* vertex_textured.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_textured.glsl; sourceTree = "<group>"; };
 		6DE9D2F01BA6AB8C002D599C /* fragment_textured.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment_textured.glsl; sourceTree = "<group>"; };
 		6DEF23BB1B96CC2600BCE792 /* fragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragment.glsl; sourceTree = "<group>"; };
@@ -63,9 +76,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D5AC2D019AE6280004CB1BF /* OpenGL.framework in Frameworks */,
+				4135B1F41DDD6A4D003E3522 /* SDL2_mixer.framework in Frameworks */,
 				6D5A86AE19AE5C710066C1FD /* Cocoa.framework in Frameworks */,
+				4135B1F61DDD6AE7003E3522 /* SDL2_image.framework in Frameworks */,
 				6D5A86E319AE5CD10066C1FD /* SDL2.framework in Frameworks */,
-				6D5AC2D219AE6A1E004CB1BF /* SDL2_image.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,7 +107,8 @@
 		6D5A86AC19AE5C710066C1FD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6D5AC2D119AE6A1E004CB1BF /* SDL2_image.framework */,
+				4135B1F31DDD6A4D003E3522 /* SDL2_mixer.framework */,
+				4135B1F51DDD6AE7003E3522 /* SDL2_image.framework */,
 				6D5AC2CF19AE6280004CB1BF /* OpenGL.framework */,
 				6D5A86E219AE5CD10066C1FD /* SDL2.framework */,
 				6D5A86AD19AE5C710066C1FD /* Cocoa.framework */,
@@ -155,12 +170,18 @@
 				6DEF23BB1B96CC2600BCE792 /* fragment.glsl */,
 				6DE9D2F01BA6AB8C002D599C /* fragment_textured.glsl */,
 				6DC707691BA7273500225B7D /* vertex_textured.glsl */,
+				4135B1FD1DDD989A003E3522 /* MixerSound.cpp */,
+				4135B1FE1DDD989A003E3522 /* MixerSound.h */,
 				6DEF23BC1B96CC2600BCE792 /* Matrix.cpp */,
 				6DEF23BD1B96CC2600BCE792 /* Matrix.h */,
 				6DEF23BE1B96CC2600BCE792 /* ShaderProgram.cpp */,
 				6DEF23BF1B96CC2600BCE792 /* ShaderProgram.h */,
 				6DEF23C01B96CC2600BCE792 /* vertex.glsl */,
+				4135B1FB1DDD9807003E3522 /* Rain.mp3 */,
 				6D5A86B919AE5C710066C1FD /* main.cpp */,
+				4135B2001DDD9C9B003E3522 /* RainDrop.wav */,
+				4135B1F91DDD9642003E3522 /* Music.wav */,
+				4135B1F71DDD953E003E3522 /* Music.mp3 */,
 				41F2B3A51D92D7800078CE2F /* imageSetup.cpp */,
 				41298A2B1D98C79300A367F2 /* MyPixelRain2.png */,
 				41298A291D98C61500A367F2 /* Emoji.png */,
@@ -196,7 +217,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = NYUCB;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Ivan Safrin";
 			};
 			buildConfigurationList = 6D5A86A519AE5C710066C1FD /* Build configuration list for PBXProject "NYUCodebase" */;
@@ -228,7 +249,11 @@
 				41298A2A1D98C61500A367F2 /* Emoji.png in Resources */,
 				6D5A86C619AE5C710066C1FD /* Images.xcassets in Resources */,
 				41298A2C1D98C79300A367F2 /* MyPixelRain2.png in Resources */,
+				4135B1FA1DDD9642003E3522 /* Music.wav in Resources */,
+				4135B2011DDD9C9B003E3522 /* RainDrop.wav in Resources */,
 				6D5A86BE19AE5C710066C1FD /* Credits.rtf in Resources */,
+				4135B1F81DDD953E003E3522 /* Music.mp3 in Resources */,
+				4135B1FC1DDD9807003E3522 /* Rain.mp3 in Resources */,
 				41298A281D98C58A00A367F2 /* MyPixelRain.png in Resources */,
 				6DEF23C41B96CC2600BCE792 /* vertex.glsl in Resources */,
 				6DC7076A1BA7273500225B7D /* vertex_textured.glsl in Resources */,
@@ -243,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DEF23C31B96CC2600BCE792 /* ShaderProgram.cpp in Sources */,
+				4135B1FF1DDD989A003E3522 /* MixerSound.cpp in Sources */,
 				6DEF23C21B96CC2600BCE792 /* Matrix.cpp in Sources */,
 				6D5A86BA19AE5C710066C1FD /* main.cpp in Sources */,
 				41F2B3A61D92D7800078CE2F /* imageSetup.cpp in Sources */,
@@ -292,13 +318,19 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -330,14 +362,19 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -357,6 +394,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
@@ -366,7 +404,14 @@
 					/Library/Frameworks/SDL2_image.framework/Versions/A/Headers,
 					/Library/Frameworks/SDL2.framework/Versions/A/Headers,
 				);
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Library/Frameworks/SDL2_image.framework/Versions/A/Headers,
+					/Library/Frameworks/SDL2.framework/Versions/A/Headers,
+				);
 				INFOPLIST_FILE = "NYUCodebase/NYUCodebase-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ivansafrin.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -380,6 +425,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
@@ -390,6 +436,7 @@
 					/Library/Frameworks/SDL2.framework/Versions/A/Headers,
 				);
 				INFOPLIST_FILE = "NYUCodebase/NYUCodebase-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.ivansafrin.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

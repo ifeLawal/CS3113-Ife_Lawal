@@ -6,6 +6,7 @@
 #include <SDL_image.h>
 #include "ShaderProgram.h"
 #include "Matrix.h"
+#include <SDL2_mixer/SDL_mixer.h>
 
 #ifdef _WINDOWS
 #define RESOURCE_FOLDER ""
@@ -50,9 +51,11 @@ public:
     float x, y, z, rot;
     float uX, uY, uZ, uRot;
     float* vertices;
+    Mix_Chunk *someSound;
     
     tester() {
         projectionMatrix.setOrthoProjection(-wideRatio, wideRatio, -heightRatio, heightRatio, -1.0, 1.0);
+        someSound = Mix_LoadWAV("RainDrop.wav");
     }
     
     void setMatrices(ShaderProgram program) {
@@ -104,11 +107,15 @@ public:
         program.setModelMatrix(modelMatrix);
         program.setProjectionMatrix(projectionMatrix);
         program.setViewMatrix(viewMatrix);
+        if(uY < -.55) {
+            Mix_PlayChannel(-1, someSound, 0);
+        }
         if(uY < -.75 ){
             modelMatrix.identity();
             float randomNumber = (2.0 * float(rand()) / float(RAND_MAX)) - 1.0;
             modelMatrix.Translate(x+randomNumber, y, 0);
             uY = y;
+            
         }
         else {
          modelMatrix.Translate(x, y, z);
@@ -190,6 +197,8 @@ int main(int argc, char *argv[])
     glewInit();
 #endif
     
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+    
     //setup
     glViewport(0, 0, 640, 360);
     
@@ -206,11 +215,15 @@ int main(int argc, char *argv[])
     
     glUseProgram(program.programID);
     
+    Mix_Music *music;
+    music = Mix_LoadMUS("Rain.mp3");
+    Mix_PlayMusic(music, -1);
+    
     float vertices[] = {-1.5, 1, -0.5, 1, -0.5, 3.0, -1.5, 1, -0.5, 3, -1.5, 3};
     float vertices2[] = {-0.5, 2, 0.5, 2, 0.5, 4, -0.5, 2, 0.5, 4, -0.5, 4};
     float vertices3[] = {0.5, 2.2, 1.5, 2.2, 1.5, 4.2, 0.5, 2.2, 1.5, 4.2, 0.5, 4.2};
     float texCoords[] = {0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0};
-    float vertices5[] = {0.5, -0.5, 0.0, 0.5, -0.5, -0.5};
+    //float vertices5[] = {0.5, -0.5, 0.0, 0.5, -0.5, -0.5};
     
     tester tester1 = tester();
     tester tester2 = tester();
@@ -224,6 +237,7 @@ int main(int argc, char *argv[])
     while (!done) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
+                Mix_FreeMusic(music);
                 done = true;
             }
         }
