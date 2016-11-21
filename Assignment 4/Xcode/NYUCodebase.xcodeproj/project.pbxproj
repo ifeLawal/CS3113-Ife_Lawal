@@ -10,13 +10,13 @@
 		410216D61DD9A93B00F5D611 /* ReadTileMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410216D41DD9A93B00F5D611 /* ReadTileMap.cpp */; };
 		4113C2471DBE54A400B652AC /* arne_sprites.png in Resources */ = {isa = PBXBuildFile; fileRef = 4113C2461DBE54A400B652AC /* arne_sprites.png */; };
 		4113C24A1DBE775700B652AC /* SpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4113C2481DBE775700B652AC /* SpriteSheet.cpp */; };
+		4135B2031DE107A2003E3522 /* myMap.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
+		4135B2041DE1265D003E3522 /* myMap.txt in Sources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		419EE8761DB317CD00F2E40E /* characters_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 419EE8751DB317CD00F2E40E /* characters_3.png */; };
 		419EE8781DB447A300F2E40E /* font1.png in Resources */ = {isa = PBXBuildFile; fileRef = 419EE8771DB447A300F2E40E /* font1.png */; };
-		419EE87A1DB457AA00F2E40E /* SpaceInvader Assets.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 419EE8791DB457AA00F2E40E /* SpaceInvader Assets.jpg */; };
 		419EE8811DB6BFE500F2E40E /* Text.h in Sources */ = {isa = PBXBuildFile; fileRef = 419EE8801DB6BFE500F2E40E /* Text.h */; };
 		419EE8841DB6C24C00F2E40E /* Text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419EE8821DB6C24C00F2E40E /* Text.cpp */; };
 		419EE8871DB6C46D00F2E40E /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419EE8851DB6C46D00F2E40E /* Entity.cpp */; };
-		419EE8891DB71B1C00F2E40E /* SI-Sheet.png in Resources */ = {isa = PBXBuildFile; fileRef = 419EE8881DB71B1C00F2E40E /* SI-Sheet.png */; };
 		41BB728F1DCA7D8200F441C9 /* CompositeEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41BB728D1DCA7D8200F441C9 /* CompositeEntity.cpp */; };
 		6D5A86AE19AE5C710066C1FD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D5A86AD19AE5C710066C1FD /* Cocoa.framework */; };
 		6D5A86B819AE5C710066C1FD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D5A86B619AE5C710066C1FD /* InfoPlist.strings */; };
@@ -40,14 +40,13 @@
 		4113C2461DBE54A400B652AC /* arne_sprites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arne_sprites.png; sourceTree = "<group>"; };
 		4113C2481DBE775700B652AC /* SpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteSheet.cpp; sourceTree = "<group>"; };
 		4113C2491DBE775700B652AC /* SpriteSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteSheet.h; sourceTree = "<group>"; };
+		4135B2021DE107A2003E3522 /* myMap.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = myMap.txt; sourceTree = "<group>"; };
 		419EE8751DB317CD00F2E40E /* characters_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = characters_3.png; sourceTree = "<group>"; };
 		419EE8771DB447A300F2E40E /* font1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font1.png; sourceTree = "<group>"; };
-		419EE8791DB457AA00F2E40E /* SpaceInvader Assets.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "SpaceInvader Assets.jpg"; sourceTree = "<group>"; };
 		419EE8801DB6BFE500F2E40E /* Text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
 		419EE8821DB6C24C00F2E40E /* Text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Text.cpp; sourceTree = "<group>"; };
 		419EE8851DB6C46D00F2E40E /* Entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
 		419EE8861DB6C46D00F2E40E /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
-		419EE8881DB71B1C00F2E40E /* SI-Sheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SI-Sheet.png"; sourceTree = "<group>"; };
 		41BB728D1DCA7D8200F441C9 /* CompositeEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeEntity.cpp; sourceTree = "<group>"; };
 		41BB728E1DCA7D8200F441C9 /* CompositeEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositeEntity.h; sourceTree = "<group>"; };
 		6D5A86AA19AE5C710066C1FD /* NYUCodebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NYUCodebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -176,6 +175,7 @@
 				419EE8861DB6C46D00F2E40E /* Entity.h */,
 				41BB728D1DCA7D8200F441C9 /* CompositeEntity.cpp */,
 				41BB728E1DCA7D8200F441C9 /* CompositeEntity.h */,
+				4135B2021DE107A2003E3522 /* myMap.txt */,
 				419EE8771DB447A300F2E40E /* font1.png */,
 				6DE9D2F01BA6AB8C002D599C /* fragment_textured.glsl */,
 				6DEF23BB1B96CC2600BCE792 /* fragment.glsl */,
@@ -184,8 +184,6 @@
 				6DEF23BD1B96CC2600BCE792 /* Matrix.h */,
 				6DEF23BE1B96CC2600BCE792 /* ShaderProgram.cpp */,
 				6DEF23BF1B96CC2600BCE792 /* ShaderProgram.h */,
-				419EE8881DB71B1C00F2E40E /* SI-Sheet.png */,
-				419EE8791DB457AA00F2E40E /* SpaceInvader Assets.jpg */,
 				419EE8821DB6C24C00F2E40E /* Text.cpp */,
 				419EE8801DB6BFE500F2E40E /* Text.h */,
 				6DC707691BA7273500225B7D /* vertex_textured.glsl */,
@@ -252,12 +250,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				419EE8781DB447A300F2E40E /* font1.png in Resources */,
+				4135B2031DE107A2003E3522 /* myMap.txt in Resources */,
 				6D5A86B819AE5C710066C1FD /* InfoPlist.strings in Resources */,
 				4113C2471DBE54A400B652AC /* arne_sprites.png in Resources */,
-				419EE87A1DB457AA00F2E40E /* SpaceInvader Assets.jpg in Resources */,
 				6DEF23C11B96CC2600BCE792 /* fragment.glsl in Resources */,
 				6DE9D2F11BA6AB8C002D599C /* fragment_textured.glsl in Resources */,
-				419EE8891DB71B1C00F2E40E /* SI-Sheet.png in Resources */,
 				419EE8761DB317CD00F2E40E /* characters_3.png in Resources */,
 				6D5A86C619AE5C710066C1FD /* Images.xcassets in Resources */,
 				6D5A86BE19AE5C710066C1FD /* Credits.rtf in Resources */,
@@ -273,6 +270,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4135B2041DE1265D003E3522 /* myMap.txt in Sources */,
 				410216D61DD9A93B00F5D611 /* ReadTileMap.cpp in Sources */,
 				4113C24A1DBE775700B652AC /* SpriteSheet.cpp in Sources */,
 				419EE8871DB6C46D00F2E40E /* Entity.cpp in Sources */,

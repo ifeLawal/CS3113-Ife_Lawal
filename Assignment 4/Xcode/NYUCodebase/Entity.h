@@ -10,6 +10,7 @@
 #define Entity_h
 
 #include <stdio.h>
+#include "ReadTileMap.h"
 #include "Matrix.h"
 #include "ShaderProgram.h"
 #include "SpriteSheet.h"
@@ -58,11 +59,15 @@ public:
     
     void updateY(float yC);
     
+    void resetCollisionFlags();
+    
     bool isColliding(Entity *other);
     
     float xCollisionHandling(Entity *other);
     
     float yCollisionHandling(Entity *other);
+    
+    void tileCollision(ReadTileMap rTM);
     
     void setMatrices(ShaderProgram *program);
     
@@ -71,6 +76,8 @@ public:
     void buildTriangle(ShaderProgram *program);
     
     void render(ShaderProgram *program, float elapsed);
+    
+    void worldToTileCoordinates(float worldX, float worldY, int *gridX, int gridY);
 };
 
 #endif /* Entities_hpp */

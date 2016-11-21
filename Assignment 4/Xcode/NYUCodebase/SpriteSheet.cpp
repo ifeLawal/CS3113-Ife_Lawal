@@ -5,7 +5,7 @@
 //  Created by Ifeoluwa Lawal on 10/24/16.
 //  Copyright © 2016 Ivan Safrin. All rights reserved.
 //
-#include "ShaderProgram.h"
+
 #include "SpriteSheet.h"
 
 SpriteSheet::SpriteSheet() {

@@ -6,18 +6,40 @@
 //  Copyright © 2016 Ivan Safrin. All rights reserved.
 //
 
-#ifndef ReadTileMap_hpp
-#define ReadTileMap_hpp
+#ifndef ReadTileMap_h
+#define ReadTileMap_h
 
-#include <string>
-#include <stdio.h>
+#define TILE_SIZE 16
+#define SPRITE_COUNT_X 16
+#define SPRITE_COUNT_Y 8
 
-bool readHeader(std::ifstream &stream);
+#include "ShaderProgram.h"
+#include <vector>
 
-bool readLayerData(std::ifstream &stream);
+class ReadTileMap {
+public:
+    GLuint mapWidth;
+    GLuint mapHeight;
+    std::vector<std::string> types;
+    std::vector<float> xPosList;
+    std::vector<float> yPosList;
+    unsigned char** levelData;
+    
+    ReadTileMap();
 
-bool readEntityData(std::ifstream &stream);
+    bool readHeader(std::ifstream &stream);
+    
+    bool readLayerData(std::ifstream &stream);
+    
+    bool readEntityData(std::ifstream &stream);
+    
+    void renderMap(ShaderProgram *program, GLuint spriteSheet);
+    
+    void placeEntity(std::string type, float x, float y);
+    
+    void worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY);
 
-void placeEntity();
+};
+
 
 #endif /* ReadTileMap_hpp */

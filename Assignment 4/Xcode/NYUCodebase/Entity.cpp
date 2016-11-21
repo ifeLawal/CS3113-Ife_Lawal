@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include <math.h>
 
+
 Entity::Entity() {
 }
 
@@ -55,6 +56,13 @@ void Entity::updatePosition(float x, float y, float z) {
     //printf("%f", xTrans);
 }
 
+void Entity::resetCollisionFlags() {
+    collidedBottom = false;
+    collidedTop = false;
+    collidedLeft = false;
+    collidedRight = false;
+}
+
 void Entity::movement(ShaderProgram *program, Entity *other, float elapsed) {
     if(!isStatic) {
         yVelocity = lerp(yVelocity, 0.0f, elapsed * yFric);
@@ -87,18 +95,27 @@ bool Entity::isColliding(Entity *other) {
 
         }
                // printf("collision\n");
-        if(bottom1 > top2) {
+        if(bottom1 < top2) {
             collidedBottom = true;
+        } else{
+            collidedBottom = false;
         }
-        if(top1 < bottom2) {
+        if(top1 > bottom2) {
             collidedTop = true;
+        } else{
+            collidedTop = false;
         }
-        if(right1 < left2) {
+        if(right1 > left2) {
             collidedRight = true;
+        } else{
+            collidedRight = false;
         }
-        if(left1 > right2) {
+        if(left1 < right2) {
             collidedLeft = true;
+        } else{
+            collidedLeft = false;
         }
+        
     //box 1s top is lower than box 2's bottom
     //box 1s bottom is higher than box 2's top
     //box 1s right is smaller than box 2's left
@@ -106,6 +123,7 @@ bool Entity::isColliding(Entity *other) {
     //no collision
         return true;
     }
+    resetCollisionFlags();
     return false;
 }
 
@@ -125,6 +143,7 @@ float Entity::xCollisionHandling(Entity *other) {
     return 0;
 }
 
+
 float Entity::yCollisionHandling(Entity *other) {
     if(isColliding(other)) {
         printf("collision\n");
@@ -143,7 +162,41 @@ float Entity::yCollisionHandling(Entity *other) {
     }
     return 0;
 }
-
+void Entity::tileCollision(ReadTileMap rTM) {
+    resetCollisionFlags();
+    float left = xTrans - width/2;
+    float right = xTrans + width/2;
+    float bottom = yTrans - height/2;
+    float top = yTrans + height/2;
+    int gridX;
+    int gridY;
+    rTM.worldToTileCoordinates(left, yTrans, &gridX, &gridY);
+    if(rTM.levelData[gridX][gridY] > 0) {
+        collidedLeft = true;
+        xVelocity = 0;
+        xTrans += .2 + ((TILE_SIZE * gridX + TILE_SIZE) - left);
+    }
+    rTM.worldToTileCoordinates(right, yTrans, &gridX, &gridY);
+    if(rTM.levelData[gridX][gridY] > 0) {
+        collidedRight = true;
+        xVelocity = 0;
+        xTrans -= .2 + (right - TILE_SIZE * gridX);
+    }
+    rTM.worldToTileCoordinates(xTrans, bottom, &gridX, &gridY);
+    if(rTM.levelData[gridX][gridY] > 0) {
+        collidedBottom = true;
+        yVelocity = 0;
+        yTrans += .2 + (-TILE_SIZE * gridY - bottom);
+    }
+    rTM.worldToTileCoordinates(xTrans, top, &gridX, &gridY);
+    if(rTM.levelData[gridX][gridY] > 0) {
+        collidedTop = true;
+        yVelocity = 0;
+        yTrans -= (top - (-TILE_SIZE * gridY)-TILE_SIZE) + .2;
+    }
+    
+    
+}
 void Entity::setMatrices(ShaderProgram* program) {
     program->setModelMatrix(modelMatrix);
 }
@@ -232,6 +285,7 @@ void Entity::drawSprite(ShaderProgram* program){
     
 }
 
+
 /*
 void Entity::DrawSpriteSheetSprite(ShaderProgram *program, int index, int spriteCountX, int spriteCountY) {
     setMatrices(program);
@@ -299,6 +353,5 @@ void Entity::render(ShaderProgram *program, float elapsed) {
     yTrans += yVelocity * elapsed;
     
     updatePosition(xTrans, yTrans, zTrans);
-    
 }
 

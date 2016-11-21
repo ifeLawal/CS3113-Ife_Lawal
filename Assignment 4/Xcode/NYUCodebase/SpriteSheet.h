@@ -6,12 +6,13 @@
 //  Copyright © 2016 Ivan Safrin. All rights reserved.
 //
 
-#include "ShaderProgram.h"
+
 
 #ifndef SpriteSheet_h
 #define SpriteSheet_h
 
 #include <stdio.h>
+#include "ShaderProgram.h"
 
 class SpriteSheet {
 

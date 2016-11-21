@@ -6,11 +6,11 @@
 #include <SDL_image.h>
 #include "ShaderProgram.h"
 #include "Matrix.h"
-#include <vector>
 #include "Text.h"
 #include "Entity.h"
 #include "CompositeEntity.h"
 #include "ReadTileMap.h"
+
 
 #ifdef _WINDOWS
 #define RESOURCE_FOLDER ""
@@ -23,6 +23,7 @@
 
 SDL_Window* displayWindow;
 
+const std::string levelFile = "NYUCodebase.app/Contents/Resources/myMap.txt";
 const float heightRatio = 1.0;
 const float wideRatio = heightRatio*(16.0/9.0);
 const float aspectRatio = 16.0/9.0;
@@ -30,6 +31,7 @@ const float PI = 3.14159265;
 float randXVelocity = 0.0f;
 float randYVelocity = 0.0f;
 float angle;
+//const std::string levelFile = "myMap.txt";
 
 Matrix modelMatrix;
 Matrix viewMatrix;
@@ -116,11 +118,36 @@ void setup() {
 int main(int argc, char *argv[])
 {
     setup();
+    ReadTileMap rTM;
+    
+    std::ifstream infile(levelFile);
+    std::string line;
+    /*
+    if(std::getline(infile, line)) {
+        printf("yes!");
+        return 0;
+    } else {
+        printf("No!");
+        return 0;
+    }
+    */
+    while (std::getline(infile, line)) {
+        if(line == "[header]") {
+            if(!rTM.readHeader(infile)) {
+                return 0;
+            }
+        }else if(line == "[layer]") {
+            rTM.readLayerData(infile);
+        } else if(line == "[ObjectsLayer]") {
+            rTM.readEntityData(infile);
+        }
+    }
+    
     ShaderProgram program (RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
     
     state = 0;
     
-    GLuint fontTexture = LoadTexture("arne_sprites.png");
+    GLuint spriteTexture = LoadTexture("arne_sprites.png");
     projectionMatrix.setOrthoProjection(-wideRatio, wideRatio, -heightRatio, heightRatio, -1.0, 1.0);
     
 
@@ -130,11 +157,11 @@ int main(int argc, char *argv[])
     program.setViewMatrix(viewMatrix);
     program.setProjectionMatrix(projectionMatrix);
     
-    SpriteSheet sheetTest(fontTexture, 16, 8, 6);
-    SpriteSheet sheetTest2(fontTexture, 16, 8, 0);
-    SpriteSheet sheetTest3(fontTexture, 16, 8, 1);
-    SpriteSheet playerSheet(fontTexture, 16, 8, 98);
-    SpriteSheet legSheet(fontTexture, 16, 8, 71);
+    SpriteSheet sheetTest(spriteTexture, 16, 8, 6);
+    SpriteSheet sheetTest2(spriteTexture, 16, 8, 0);
+    SpriteSheet sheetTest3(spriteTexture, 16, 8, 1);
+    SpriteSheet playerSheet(spriteTexture, 16, 8, 98);
+    SpriteSheet legSheet(spriteTexture, 16, 8, 71);
     //SpriteSheet(<#GLuint spriteSheet#>, int spriteCountX, <#int spriteCountY#>)
     float h = 1;
     Entity tester(h, h, .2, true, ENTITY_WALL, &sheetTest);
@@ -149,11 +176,21 @@ int main(int argc, char *argv[])
     player.setPosition(0, 0, 0);
     leg.setPosition(0, 0, 0);
     
+    for(int i = 0; i < rTM.types.size(); i++) {
+        if(rTM.types[i] == "Player") {
+            player.setPosition(rTM.xPosList[i], rTM.yPosList[i], 0);
+        }
+        if(rTM.types[i] == "Enemy") {
+            
+        }
+    }
     
+    int xGrid = 0;
+    int yGrid = 0;
     CompositeEntity fullPlayer(player,leg);
     
     //fullPlayer.updatePosition(.2, 0, 0);
-    Text test("Hello", fontTexture, .2, -.04);
+    Text test("Hello", spriteTexture, .2, -.04);
     
     SDL_Event event;
     bool done = false;
@@ -164,9 +201,9 @@ int main(int argc, char *argv[])
                 done = true;
             }
             if(keys[SDL_SCANCODE_RIGHT]) {
-                fullPlayer.xVelocity = 1;
+                player.xVelocity = 1;
             } else if (keys[SDL_SCANCODE_LEFT]) {
-                fullPlayer.xVelocity = -1;
+                player.xVelocity = -1;
             }
         }
         
@@ -180,7 +217,7 @@ int main(int argc, char *argv[])
         
         
         glClear(GL_COLOR_BUFFER_BIT);
-        
+        rTM.renderMap(&program, spriteTexture);
         /*
         modelMatrix.identity();
         modelMatrix.Translate(-.5f, .5f, 0);
@@ -191,7 +228,7 @@ int main(int argc, char *argv[])
 
         //leg.drawSprite(&program);
         //fullPlayer.movement(&program, &tester, elapsed);
-        //DrawText(&program, fontTexture, "Hello", .2, -.04);
+        //DrawText(&program, spriteTexture, "Hello", .2, -.04);
         float fixedElapsed = elapsed;
         if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
             fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -206,19 +243,24 @@ int main(int argc, char *argv[])
         //leg.movement(&program, &tester, fixedElapsed);
         
         //fullPlayer.isColliding(&tester);
-        
+        /*
         tester.drawSprite(&program);
         tester2.drawSprite(&program);
         tester3.drawSprite(&program);
+        */
         player.drawSprite(&program);
         leg.drawSprite(&program);
+        player.tileCollision(rTM);
+        
         
         program.setViewMatrix(player.modelMatrix.inverse());
+        
         
         modelMatrix.identity();
         test.DrawText(&program);
         
         SDL_GL_SwapWindow(displayWindow);
+        
     }
     
     SDL_Quit();
