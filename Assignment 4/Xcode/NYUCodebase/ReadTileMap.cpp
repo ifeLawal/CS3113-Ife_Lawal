@@ -9,7 +9,7 @@
 #include "ReadTileMap.h"
 
 
-#define TILE_SIZE 16
+#define TILE_SIZE 1
 #define SPRITE_COUNT_X 16
 #define SPRITE_COUNT_Y 8
 using namespace std;
@@ -17,6 +17,16 @@ using namespace std;
 ReadTileMap::ReadTileMap() {
     GLuint mapWidth = -1;
     GLuint mapHeight = -1;
+    for(int i = 1; i <= 7; i++) {
+        solidTiles.push_back(i);
+        if(i <= 5) {
+            solidTiles.push_back(i+15);
+        }
+        if(i >= 2 && i <= 5) {
+            solidTiles.push_back(i+30);
+        }
+    }
+    
 }
 
 bool ReadTileMap::readHeader(std::ifstream &stream) {
@@ -98,7 +108,7 @@ bool ReadTileMap::readEntityData(std::ifstream &stream) {
             getline(lineStream, yPosition, ',');
             
             float placeX = atoi(xPosition.c_str())*TILE_SIZE;
-            float placeY = atoi(yPosition.c_str())*TILE_SIZE;
+            float placeY = atoi(yPosition.c_str())*TILE_SIZE;            
             
             types.push_back(type);
             xPosList.push_back(placeX);
@@ -118,13 +128,13 @@ void ReadTileMap::renderMap(ShaderProgram *program, GLuint spriteSheet) {
         for(int x=0;x< mapWidth;x++) {
             if(levelData[y][x] != 0) {
                 numTex += 1;
-                printf("numTexIn: %i\n", numTex);
-                float u = (float)(((int)levelData[x][y]) % SPRITE_COUNT_X) / (float) SPRITE_COUNT_X;
-                float v = (float)(((int)levelData[x][y]) / SPRITE_COUNT_Y) / (float) SPRITE_COUNT_Y;
+                //printf("numTexIn: %i\n", numTex);
+                float u = (float)(((int)levelData[y][x]) % SPRITE_COUNT_X) / (float) SPRITE_COUNT_X;
+                float v = (float)(((int)levelData[y][x]) / SPRITE_COUNT_X) / (float) SPRITE_COUNT_Y;
             
                 float spriteWidth = 1.0f/(float)SPRITE_COUNT_X;
                 float spriteHeight = 1.0f/(float)SPRITE_COUNT_Y;
-                if(numTex == 1) {
+                /*if(numTex == 1) {
                     vertexData.insert(vertexData.end(), {
                         0.0,-0.2,
                         0.2, -0.2,
@@ -134,7 +144,7 @@ void ReadTileMap::renderMap(ShaderProgram *program, GLuint spriteSheet) {
                         0.2, 0.0,
                         0.0, 0.0
                     });
-                } else {
+                }*/
                 vertexData.insert(vertexData.end(), {
                      TILE_SIZE * (float)x, -TILE_SIZE * (float)y,
                      TILE_SIZE * (float)x,  (-TILE_SIZE * (float)y)-TILE_SIZE,
@@ -144,7 +154,7 @@ void ReadTileMap::renderMap(ShaderProgram *program, GLuint spriteSheet) {
                      (TILE_SIZE * (float)x)+TILE_SIZE,  (-TILE_SIZE * (float)y)-TILE_SIZE,
                      (TILE_SIZE * (float)x)+TILE_SIZE,  -TILE_SIZE * (float)y
                 });
-                }
+                
                 texCoordData.insert(texCoordData.end(), {
                     u, v,
                     u, v+spriteHeight,
@@ -177,4 +187,15 @@ void ReadTileMap::renderMap(ShaderProgram *program, GLuint spriteSheet) {
 void ReadTileMap::worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY) {
     *gridX = (int)(worldX / TILE_SIZE);
     *gridY = (int)(-worldY / TILE_SIZE);
+}
+
+bool ReadTileMap::isSolid(int x, int y) {
+    int val = levelData[y][x];
+    for(int i = 0; i < solidTiles.size(); i++) {
+        if(val == solidTiles[i]) {
+            return true;
+        }
+    }
+    return false;
+    
 }

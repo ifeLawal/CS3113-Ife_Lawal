@@ -10,6 +10,7 @@
 		410216D61DD9A93B00F5D611 /* ReadTileMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410216D41DD9A93B00F5D611 /* ReadTileMap.cpp */; };
 		4113C2471DBE54A400B652AC /* arne_sprites.png in Resources */ = {isa = PBXBuildFile; fileRef = 4113C2461DBE54A400B652AC /* arne_sprites.png */; };
 		4113C24A1DBE775700B652AC /* SpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4113C2481DBE775700B652AC /* SpriteSheet.cpp */; };
+		4119A17C1DEE766A0089BB09 /* characters_3_02.png in Resources */ = {isa = PBXBuildFile; fileRef = 4119A17B1DEE766A0089BB09 /* characters_3_02.png */; };
 		4135B2031DE107A2003E3522 /* myMap.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		4135B2041DE1265D003E3522 /* myMap.txt in Sources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		419EE8761DB317CD00F2E40E /* characters_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 419EE8751DB317CD00F2E40E /* characters_3.png */; };
@@ -40,6 +41,7 @@
 		4113C2461DBE54A400B652AC /* arne_sprites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arne_sprites.png; sourceTree = "<group>"; };
 		4113C2481DBE775700B652AC /* SpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteSheet.cpp; sourceTree = "<group>"; };
 		4113C2491DBE775700B652AC /* SpriteSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteSheet.h; sourceTree = "<group>"; };
+		4119A17B1DEE766A0089BB09 /* characters_3_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = characters_3_02.png; path = ../characters_3_02.png; sourceTree = "<group>"; };
 		4135B2021DE107A2003E3522 /* myMap.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = myMap.txt; sourceTree = "<group>"; };
 		419EE8751DB317CD00F2E40E /* characters_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = characters_3.png; sourceTree = "<group>"; };
 		419EE8771DB447A300F2E40E /* font1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font1.png; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 			children = (
 				4113C2461DBE54A400B652AC /* arne_sprites.png */,
 				419EE8751DB317CD00F2E40E /* characters_3.png */,
+				4119A17B1DEE766A0089BB09 /* characters_3_02.png */,
 				419EE8851DB6C46D00F2E40E /* Entity.cpp */,
 				419EE8861DB6C46D00F2E40E /* Entity.h */,
 				41BB728D1DCA7D8200F441C9 /* CompositeEntity.cpp */,
@@ -254,6 +257,7 @@
 				6D5A86B819AE5C710066C1FD /* InfoPlist.strings in Resources */,
 				4113C2471DBE54A400B652AC /* arne_sprites.png in Resources */,
 				6DEF23C11B96CC2600BCE792 /* fragment.glsl in Resources */,
+				4119A17C1DEE766A0089BB09 /* characters_3_02.png in Resources */,
 				6DE9D2F11BA6AB8C002D599C /* fragment_textured.glsl in Resources */,
 				419EE8761DB317CD00F2E40E /* characters_3.png in Resources */,
 				6D5A86C619AE5C710066C1FD /* Images.xcassets in Resources */,

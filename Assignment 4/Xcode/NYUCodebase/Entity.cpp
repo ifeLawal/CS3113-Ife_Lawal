@@ -8,7 +8,7 @@
 
 #include "Entity.h"
 #include <math.h>
-
+#define TILE_SIZE 1
 
 Entity::Entity() {
 }
@@ -23,7 +23,7 @@ Entity::Entity(float wVal, float hVal, float s, bool st, EntityType eType, Sprit
     sprite = *sheet;
     //printf("%lf", vertices[0]);
     yGravity = -9.81;
-    xFric = .5;
+    xFric = 3;
     yFric = .5;
     //active = false;
 }
@@ -65,6 +65,7 @@ void Entity::resetCollisionFlags() {
 
 void Entity::movement(ShaderProgram *program, Entity *other, float elapsed) {
     if(!isStatic) {
+        
         yVelocity = lerp(yVelocity, 0.0f, elapsed * yFric);
         yVelocity += (yAccle + yGravity) * elapsed;
         yTrans += yVelocity * elapsed;
@@ -76,7 +77,8 @@ void Entity::movement(ShaderProgram *program, Entity *other, float elapsed) {
         xTrans += xCollisionHandling(other);
         
         setPosition(xTrans, yTrans, zTrans);
-        printf("%lf\n", yTrans);
+//        printf("y: %lf / ", yTrans);
+//        printf("x: %lf\n", xTrans);
     }
 }
 
@@ -143,20 +145,17 @@ float Entity::xCollisionHandling(Entity *other) {
     return 0;
 }
 
-
 float Entity::yCollisionHandling(Entity *other) {
     if(isColliding(other)) {
         printf("collision\n");
         float x_distance = fabs(other->yTrans - yTrans);
         float penetration = fabs(x_distance - other->height/2 - height/2);
-        float yMove = penetration + 15;
+        float yMove = penetration + .015;
         yVelocity = 0;
         if(collidedTop) {
-            printf("val\n");
             return -yMove;
         }
         if(collidedBottom) {
-            printf("val2\n");
            return yMove;
         }
     }
@@ -171,28 +170,41 @@ void Entity::tileCollision(ReadTileMap rTM) {
     int gridX;
     int gridY;
     rTM.worldToTileCoordinates(left, yTrans, &gridX, &gridY);
-    if(rTM.levelData[gridX][gridY] > 0) {
+    if(rTM.isSolid(gridX, gridY)) {
         collidedLeft = true;
         xVelocity = 0;
-        xTrans += .2 + ((TILE_SIZE * gridX + TILE_SIZE) - left);
+        xTrans += .01 + ((TILE_SIZE * gridX + TILE_SIZE) - left);
+        printf("collidedLeft: %i, ", gridX);
+        printf("%i", gridY);
+        printf("%i\n", rTM.levelData[gridX][gridY]);
     }
     rTM.worldToTileCoordinates(right, yTrans, &gridX, &gridY);
-    if(rTM.levelData[gridX][gridY] > 0) {
+    if(rTM.isSolid(gridX, gridY)) {
         collidedRight = true;
         xVelocity = 0;
-        xTrans -= .2 + (right - TILE_SIZE * gridX);
+        xTrans -= .01 + (right - TILE_SIZE * gridX);
+        printf("collidedRight: %i, ", gridX);
+        printf("%i", gridY);
+        printf("%i\n", rTM.levelData[gridX][gridY]);
     }
     rTM.worldToTileCoordinates(xTrans, bottom, &gridX, &gridY);
-    if(rTM.levelData[gridX][gridY] > 0) {
+    if(rTM.isSolid(gridX, gridY)) {
         collidedBottom = true;
         yVelocity = 0;
-        yTrans += .2 + (-TILE_SIZE * gridY - bottom);
+        yTrans += (-TILE_SIZE * gridY - bottom);
+        printf("collidedBottom: %i, ", gridX);
+        printf("%i\n", gridY);
+        printf("%i\n", rTM.levelData[gridX][gridY]);
+        printf("colY: %f\n", yTrans);
+        
     }
     rTM.worldToTileCoordinates(xTrans, top, &gridX, &gridY);
-    if(rTM.levelData[gridX][gridY] > 0) {
+    if(rTM.isSolid(gridX, gridY)) {
         collidedTop = true;
         yVelocity = 0;
-        yTrans -= (top - (-TILE_SIZE * gridY)-TILE_SIZE) + .2;
+        yTrans -= (top - (-TILE_SIZE * gridY)-TILE_SIZE) + .01;
+        printf("collidedUp: %i, ", gridX);
+        printf("%i\n", gridY);
     }
     
     
@@ -205,6 +217,11 @@ void Entity::drawSprite(ShaderProgram* program){
     GLuint spriteSheet = sprite.spriteSheet;
     setMatrices(program);
     GLfloat texCoords[12];
+    if(xVelocity == 0) {
+        sprite.animateIdle();
+    } else if(xVelocity > 0){
+        sprite.animateWalk();
+    }
     
     if(sprite.index > -1) {
         int index = sprite.index;
@@ -285,52 +302,6 @@ void Entity::drawSprite(ShaderProgram* program){
     
 }
 
-
-/*
-void Entity::DrawSpriteSheetSprite(ShaderProgram *program, int index, int spriteCountX, int spriteCountY) {
-    setMatrices(program);
-    
-    float u = (float)(((int)index) % spriteCountX) / (float) spriteCountX;
-    float v = (float)(((int)index) / spriteCountX) / (float) spriteCountY;
-    float spriteWidth = 1.0/(float)spriteCountX;
-    float spriteHeight = 1.0/(float)spriteCountY;
-    
-    GLfloat texCoords [] = {
-        u, v+spriteHeight,
-        u+spriteWidth, v+spriteHeight,
-        u+spriteWidth, v,
-        u, v+spriteHeight,
-        u+spriteWidth, v,
-        u, v
-    };
-    /*
-     u, v+spriteHeight,
-     u+spriteWidth, v,
-     u, v,
-     u+spriteWidth, v,
-     u, v+spriteHeight,
-     u+spriteWidth, v+spriteHeight
-     };
-    
-    
-    //float vertices[] = {1.5f, -1.5f, 1.0f, 1.5f, -.7f, .7f};
-    
-    
-    glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
-    glEnableVertexAttribArray(program->positionAttribute);
-    
-    
-    glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
-    glEnableVertexAttribArray(program->texCoordAttribute);
-    
-    glBindTexture(GL_TEXTURE_2D, spriteSheet);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    
-    glDisableVertexAttribArray(program->positionAttribute);
-    
-    glDisableVertexAttribArray(program->texCoordAttribute);
-}
-*/
 void Entity::buildTriangle(ShaderProgram *program) {
     setMatrices(program);
     glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
@@ -354,4 +325,52 @@ void Entity::render(ShaderProgram *program, float elapsed) {
     
     updatePosition(xTrans, yTrans, zTrans);
 }
+
+
+
+/*
+ void Entity::DrawSpriteSheetSprite(ShaderProgram *program, int index, int spriteCountX, int spriteCountY) {
+ setMatrices(program);
+ 
+ float u = (float)(((int)index) % spriteCountX) / (float) spriteCountX;
+ float v = (float)(((int)index) / spriteCountX) / (float) spriteCountY;
+ float spriteWidth = 1.0/(float)spriteCountX;
+ float spriteHeight = 1.0/(float)spriteCountY;
+ 
+ GLfloat texCoords [] = {
+ u, v+spriteHeight,
+ u+spriteWidth, v+spriteHeight,
+ u+spriteWidth, v,
+ u, v+spriteHeight,
+ u+spriteWidth, v,
+ u, v
+ };
+ /*
+ u, v+spriteHeight,
+ u+spriteWidth, v,
+ u, v,
+ u+spriteWidth, v,
+ u, v+spriteHeight,
+ u+spriteWidth, v+spriteHeight
+ };
+ 
+ 
+ //float vertices[] = {1.5f, -1.5f, 1.0f, 1.5f, -.7f, .7f};
+ 
+ 
+ glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+ glEnableVertexAttribArray(program->positionAttribute);
+ 
+ 
+ glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+ glEnableVertexAttribArray(program->texCoordAttribute);
+ 
+ glBindTexture(GL_TEXTURE_2D, spriteSheet);
+ glDrawArrays(GL_TRIANGLES, 0, 6);
+ 
+ glDisableVertexAttribArray(program->positionAttribute);
+ 
+ glDisableVertexAttribArray(program->texCoordAttribute);
+ }
+ */
 

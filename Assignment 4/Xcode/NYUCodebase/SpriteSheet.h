@@ -13,6 +13,8 @@
 
 #include <stdio.h>
 #include "ShaderProgram.h"
+#include <vector>
+#include <stdarg.h>
 
 class SpriteSheet {
 
@@ -27,16 +29,30 @@ public:
     float width;
     float size;
     
+    int walkCyclePos;
+    int idleCyclePos;
+    std::vector<int> idleSprites;
+    std::vector<int> walkSprites;
+    
     SpriteSheet();
     SpriteSheet(GLuint spriteSheet, int spriteCountX, int spriteCountY, int index);
     SpriteSheet(GLuint spriteSheet, float u, float v, float height, float width, float size);
     SpriteSheet(SpriteSheet const &sprite);
+    //SpriteSheet(
     
     GLfloat* genCoords();
     
     void setSpriteCount(int x, int y);
     void setHNW(int h, int w);
     void setIndex(int i);
+    
+    void animateIdle();
+    
+    void animateWalk();
+    
+    void fillIdle(int n_args, ...);
+    
+    void fillWalk(int n_args, ...);
     
 };
 

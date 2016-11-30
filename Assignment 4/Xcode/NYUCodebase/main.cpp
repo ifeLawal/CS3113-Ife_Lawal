@@ -24,7 +24,7 @@
 SDL_Window* displayWindow;
 
 const std::string levelFile = "NYUCodebase.app/Contents/Resources/myMap.txt";
-const float heightRatio = 1.0;
+const float heightRatio = 1.0*5;
 const float wideRatio = heightRatio*(16.0/9.0);
 const float aspectRatio = 16.0/9.0;
 const float PI = 3.14159265;
@@ -119,6 +119,7 @@ int main(int argc, char *argv[])
 {
     setup();
     ReadTileMap rTM;
+    int jmpAmt;
     
     std::ifstream infile(levelFile);
     std::string line;
@@ -148,7 +149,8 @@ int main(int argc, char *argv[])
     state = 0;
     
     GLuint spriteTexture = LoadTexture("arne_sprites.png");
-    projectionMatrix.setOrthoProjection(-wideRatio, wideRatio, -heightRatio, heightRatio, -1.0, 1.0);
+    GLuint charTexture = LoadTexture("characters_3_02.png");
+    projectionMatrix.setOrthoProjection(-wideRatio, wideRatio, -heightRatio, heightRatio, -1, 1);
     
 
     float lastFrameTicks = 0.0f;
@@ -157,31 +159,32 @@ int main(int argc, char *argv[])
     program.setViewMatrix(viewMatrix);
     program.setProjectionMatrix(projectionMatrix);
     
-    SpriteSheet sheetTest(spriteTexture, 16, 8, 6);
-    SpriteSheet sheetTest2(spriteTexture, 16, 8, 0);
+    SpriteSheet sheetTest(spriteTexture, 16, 8, 80);
+    SpriteSheet sheetTest2(spriteTexture, 16, 8, 81);
     SpriteSheet sheetTest3(spriteTexture, 16, 8, 1);
-    SpriteSheet playerSheet(spriteTexture, 16, 8, 98);
+    
+    SpriteSheet playerSheet(charTexture, 8, 3, 8);
+    
+    //playerSheet.fillIdle();
+    
     SpriteSheet legSheet(spriteTexture, 16, 8, 71);
-    //SpriteSheet(<#GLuint spriteSheet#>, int spriteCountX, <#int spriteCountY#>)
+
     float h = 1;
-    Entity tester(h, h, .2, true, ENTITY_WALL, &sheetTest);
-    Entity tester2(h, h, .2, true, ENTITY_WALL, &sheetTest2);
-    Entity tester3(h, h, .2, true, ENTITY_WALL, &sheetTest3);
-    Entity player(h, h, .2, false,ENTITY_PLAYER, &playerSheet);
+    Entity enemy(h, h, 1, true, ENTITY_ENEMY, &sheetTest);
+    Entity enemy2(h, h, 1, true, ENTITY_ENEMY, &sheetTest2);
+    
+    Entity player(h, h, 1, false,ENTITY_PLAYER, &playerSheet);
     Entity leg(h, h, .2, false, ENTITY_PLAYER, &legSheet);
-    //Entity(<#float wVal#>, <#float hVal#>, <#SpriteSheet sheet#>)
-    tester.setPosition(0, -.4, 0);
-    tester2.setPosition(0.4, -.4, 0);
-    tester3.setPosition(0.6, -.4, 0);
+
     player.setPosition(0, 0, 0);
     leg.setPosition(0, 0, 0);
     
     for(int i = 0; i < rTM.types.size(); i++) {
         if(rTM.types[i] == "Player") {
-            player.setPosition(rTM.xPosList[i], rTM.yPosList[i], 0);
+            player.setPosition(rTM.xPosList[i], -rTM.yPosList[i], 0);
         }
         if(rTM.types[i] == "Enemy") {
-            
+            enemy.setPosition(rTM.xPosList[i], -rTM.yPosList[i], 0);
         }
     }
     
@@ -201,9 +204,22 @@ int main(int argc, char *argv[])
                 done = true;
             }
             if(keys[SDL_SCANCODE_RIGHT]) {
-                player.xVelocity = 1;
+                player.xAccle = 5;
             } else if (keys[SDL_SCANCODE_LEFT]) {
-                player.xVelocity = -1;
+                player.xAccle = -5;
+            }  else {
+                player.xAccle = 0;
+            }
+            if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && player.collidedBottom == true) {
+                jmpAmt = 0;
+                player.yVelocity = 6;
+                jmpAmt++;
+                printf("jumped: %i", jmpAmt);
+            }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
+            else if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && jmpAmt == 1) {
+                player.yVelocity += player.yVelocity;
+                jmpAmt = 0;
+                printf("jumping: %i", jmpAmt);
             }
         }
         
@@ -215,8 +231,15 @@ int main(int argc, char *argv[])
         //loop
         
         
-        
+        glClearColor(.9, .9, .9, .7);
         glClear(GL_COLOR_BUFFER_BIT);
+        
+        
+        program.setViewMatrix(player.modelMatrix.inverse());
+
+        modelMatrix.identity();
+        program.setModelMatrix(modelMatrix);
+        
         rTM.renderMap(&program, spriteTexture);
         /*
         modelMatrix.identity();
@@ -236,25 +259,27 @@ int main(int argc, char *argv[])
         while (fixedElapsed >= FIXED_TIMESTEP) {
             fixedElapsed -= FIXED_TIMESTEP;
             //player.drawSprite(&program);
-            player.movement(&program, &tester, FIXED_TIMESTEP);
+            player.movement(&program, &enemy, FIXED_TIMESTEP);
+            enemy.movement(&program, &player, FIXED_TIMESTEP);
             //leg.movement(&program, &tester, FIXED_TIMESTEP);
         }
-        player.movement(&program, &tester, fixedElapsed);
+        player.movement(&program, &enemy, fixedElapsed);
+        
+        //modelMatrix.Scale(-1, 1, 1);
+        
+        enemy.movement(&program, &player, FIXED_TIMESTEP);
         //leg.movement(&program, &tester, fixedElapsed);
         
         //fullPlayer.isColliding(&tester);
-        /*
-        tester.drawSprite(&program);
-        tester2.drawSprite(&program);
-        tester3.drawSprite(&program);
-        */
-        player.drawSprite(&program);
-        leg.drawSprite(&program);
+        
+        enemy.tileCollision(rTM);
+        enemy.drawSprite(&program);
+        
+        //enemy.drawSprite(&program);
+        
+        
         player.tileCollision(rTM);
-        
-        
-        program.setViewMatrix(player.modelMatrix.inverse());
-        
+        player.drawSprite(&program);
         
         modelMatrix.identity();
         test.DrawText(&program);

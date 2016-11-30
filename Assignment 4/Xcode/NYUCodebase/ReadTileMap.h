@@ -24,6 +24,7 @@ public:
     std::vector<float> xPosList;
     std::vector<float> yPosList;
     unsigned char** levelData;
+    std::vector<int> solidTiles;
     
     ReadTileMap();
 
@@ -38,6 +39,8 @@ public:
     void placeEntity(std::string type, float x, float y);
     
     void worldToTileCoordinates(float worldX, float worldY, int *gridX, int *gridY);
+    
+    bool isSolid(int x, int y);
 
 };
 

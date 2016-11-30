@@ -32,6 +32,45 @@ SpriteSheet::SpriteSheet(SpriteSheet const &sheet) {
     size = sheet.size;
 }
 
+void SpriteSheet::animateIdle() {
+    //vector of walking position = 0;
+    if(idleSprites.size() > 0) {
+        walkCyclePos = 0;
+        idleCyclePos++;
+        idleCyclePos = idleCyclePos % idleSprites.size();
+        index = idleSprites[idleCyclePos];
+    }
+}
+
+void SpriteSheet::animateWalk() {
+    if(walkSprites.size() > 0) {
+        idleCyclePos = 0;
+        walkCyclePos++;
+        walkCyclePos = walkCyclePos % walkSprites.size();
+        index = walkSprites[walkCyclePos];
+    }
+}
+
+void SpriteSheet::fillIdle(int n_args, ...) {
+    va_list ap;
+    va_start(ap, n_args);
+    for(int i = 1; i <= n_args; i++) {
+        int a = va_arg(ap, int);
+        idleSprites.push_back(a);
+    }
+    va_end(ap);
+}
+
+void SpriteSheet::fillWalk(int n_args, ...) {
+    va_list ap;
+    va_start(ap, n_args);
+    for(int i = 1; i <= n_args; i++) {
+        int a = va_arg(ap, int);
+        walkSprites.push_back(a);
+    }
+    va_end(ap);
+}
+
 GLfloat* SpriteSheet::genCoords() {
     if(index > -1) {
         glBindTexture(GL_TEXTURE_2D, spriteSheet);
