@@ -24,7 +24,7 @@
 SDL_Window* displayWindow;
 
 const std::string levelFile = "NYUCodebase.app/Contents/Resources/myMap.txt";
-const float heightRatio = 1.0*5;
+const float heightRatio = 1.0*10;
 const float wideRatio = heightRatio*(16.0/9.0);
 const float aspectRatio = 16.0/9.0;
 const float PI = 3.14159265;
@@ -121,6 +121,7 @@ int main(int argc, char *argv[])
     ReadTileMap rTM;
     int jmpAmt;
     
+    
     std::ifstream infile(levelFile);
     std::string line;
     /*
@@ -165,12 +166,12 @@ int main(int argc, char *argv[])
     
     SpriteSheet playerSheet(charTexture, 8, 3, 8);
     
-    //playerSheet.fillIdle();
+    //playerSheet.fillIdle(13, 14, 15);
     
     SpriteSheet legSheet(spriteTexture, 16, 8, 71);
 
     float h = 1;
-    Entity enemy(h, h, 1, true, ENTITY_ENEMY, &sheetTest);
+    Entity enemy(h, h, 1, false, ENTITY_ENEMY, &sheetTest);
     Entity enemy2(h, h, 1, true, ENTITY_ENEMY, &sheetTest2);
     
     Entity player(h, h, 1, false,ENTITY_PLAYER, &playerSheet);
@@ -190,7 +191,7 @@ int main(int argc, char *argv[])
     
     int xGrid = 0;
     int yGrid = 0;
-    CompositeEntity fullPlayer(player,leg);
+    //CompositeEntity fullPlayer(player,leg);
     
     //fullPlayer.updatePosition(.2, 0, 0);
     Text test("Hello", spriteTexture, .2, -.04);
@@ -221,6 +222,14 @@ int main(int argc, char *argv[])
                 jmpAmt = 0;
                 printf("jumping: %i", jmpAmt);
             }
+        }
+        if(enemy.collisionAmt == 1 && enemy.xVelocity == 0 && enemy.collidedBottom == true && enemy.collidedLeft == false && enemy.collidedRight == false ) {
+            enemy.xVelocity =  10;
+        }
+        if(enemy.collidedRight == true) {
+            enemy.xVelocity = -20;
+        } else if(enemy.collidedLeft == true) {
+            enemy.xVelocity = 20;
         }
         
         float ticks = (float)SDL_GetTicks()/1000.0f;
@@ -267,7 +276,7 @@ int main(int argc, char *argv[])
         
         //modelMatrix.Scale(-1, 1, 1);
         
-        enemy.movement(&program, &player, FIXED_TIMESTEP);
+        enemy.movement(&program, &player, fixedElapsed);
         //leg.movement(&program, &tester, fixedElapsed);
         
         //fullPlayer.isColliding(&tester);

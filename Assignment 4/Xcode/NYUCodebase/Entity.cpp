@@ -25,6 +25,7 @@ Entity::Entity(float wVal, float hVal, float s, bool st, EntityType eType, Sprit
     yGravity = -9.81;
     xFric = 3;
     yFric = .5;
+    collisionAmt = 0;
     //active = false;
 }
 
@@ -170,43 +171,44 @@ void Entity::tileCollision(ReadTileMap rTM) {
     int gridX;
     int gridY;
     rTM.worldToTileCoordinates(left, yTrans, &gridX, &gridY);
-    if(rTM.isSolid(gridX, gridY)) {
-        collidedLeft = true;
-        xVelocity = 0;
-        xTrans += .01 + ((TILE_SIZE * gridX + TILE_SIZE) - left);
-        printf("collidedLeft: %i, ", gridX);
-        printf("%i", gridY);
-        printf("%i\n", rTM.levelData[gridX][gridY]);
-    }
-    rTM.worldToTileCoordinates(right, yTrans, &gridX, &gridY);
-    if(rTM.isSolid(gridX, gridY)) {
-        collidedRight = true;
-        xVelocity = 0;
-        xTrans -= .01 + (right - TILE_SIZE * gridX);
-        printf("collidedRight: %i, ", gridX);
-        printf("%i", gridY);
-        printf("%i\n", rTM.levelData[gridX][gridY]);
-    }
-    rTM.worldToTileCoordinates(xTrans, bottom, &gridX, &gridY);
-    if(rTM.isSolid(gridX, gridY)) {
-        collidedBottom = true;
-        yVelocity = 0;
-        yTrans += (-TILE_SIZE * gridY - bottom);
-        printf("collidedBottom: %i, ", gridX);
-        printf("%i\n", gridY);
-        printf("%i\n", rTM.levelData[gridX][gridY]);
-        printf("colY: %f\n", yTrans);
-        
-    }
-    rTM.worldToTileCoordinates(xTrans, top, &gridX, &gridY);
-    if(rTM.isSolid(gridX, gridY)) {
-        collidedTop = true;
-        yVelocity = 0;
-        yTrans -= (top - (-TILE_SIZE * gridY)-TILE_SIZE) + .01;
-        printf("collidedUp: %i, ", gridX);
-        printf("%i\n", gridY);
-    }
     
+    if(rTM.isDeathTile(gridX, gridY)) {
+        xVelocity = 0;
+        for(int i = 0; i < rTM.types.size(); i++) {
+            if(rTM.types[i] == "Player") {
+                setPosition(rTM.xPosList[i], -rTM.yPosList[i], 0);
+            }
+        }
+    }
+    else {
+        if(rTM.isSolid(gridX, gridY)) {
+            collidedLeft = true;
+            xVelocity = 0;
+            xTrans += .05 + ((TILE_SIZE * gridX + TILE_SIZE) - left);
+            collisionAmt++;
+        }
+        rTM.worldToTileCoordinates(right, yTrans, &gridX, &gridY);
+        if(rTM.isSolid(gridX, gridY)) {
+            collidedRight = true;
+            xVelocity = 0;
+            xTrans -= .05 + (right - TILE_SIZE * gridX);
+            collisionAmt++;
+        }
+        rTM.worldToTileCoordinates(xTrans, bottom, &gridX, &gridY);
+        if(rTM.isSolid(gridX, gridY)) {
+            collidedBottom = true;
+            yVelocity = 0;
+            yTrans += (-TILE_SIZE * gridY - bottom);
+            collisionAmt++;
+        }
+        rTM.worldToTileCoordinates(xTrans, top, &gridX, &gridY);
+        if(rTM.isSolid(gridX, gridY)) {
+            collidedTop = true;
+            yVelocity = 0;
+            yTrans -= (top - (-TILE_SIZE * gridY)-TILE_SIZE) + .01;
+            collisionAmt++;
+        }
+    }
     
 }
 void Entity::setMatrices(ShaderProgram* program) {

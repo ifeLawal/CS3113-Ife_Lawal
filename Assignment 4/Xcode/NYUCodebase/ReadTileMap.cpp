@@ -26,6 +26,9 @@ ReadTileMap::ReadTileMap() {
             solidTiles.push_back(i+30);
         }
     }
+    for(int i = 100; i <= 101; i++) {
+        deathTiles.push_back(i);
+    }
     
 }
 
@@ -198,4 +201,14 @@ bool ReadTileMap::isSolid(int x, int y) {
     }
     return false;
     
+}
+
+bool ReadTileMap::isDeathTile(int x, int y) {
+    int val = levelData[y][x];
+    for(int i = 0; i < deathTiles.size(); i++) {
+        if(val == deathTiles[i]) {
+            return true;
+        }
+    }
+    return false;
 }

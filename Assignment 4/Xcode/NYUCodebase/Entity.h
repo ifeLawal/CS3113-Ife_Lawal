@@ -28,6 +28,7 @@ public:
     Matrix modelMatrix;
     float vertices[12];
     
+    int collisionAmt;
     bool isStatic;
     EntityType entityType;
     
