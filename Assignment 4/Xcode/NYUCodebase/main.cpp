@@ -24,7 +24,7 @@
 SDL_Window* displayWindow;
 
 const std::string levelFile = "NYUCodebase.app/Contents/Resources/myMap.txt";
-const float heightRatio = 1.0*10;
+const float heightRatio = 1.0*5;
 const float wideRatio = heightRatio*(16.0/9.0);
 const float aspectRatio = 16.0/9.0;
 const float PI = 3.14159265;
@@ -166,7 +166,8 @@ int main(int argc, char *argv[])
     
     SpriteSheet playerSheet(charTexture, 8, 3, 8);
     
-    //playerSheet.fillIdle(13, 14, 15);
+    playerSheet.fillIdle(3, 13, 14, 15);
+    playerSheet.fillWalk(4, 8, 9, 10, 11);
     
     SpriteSheet legSheet(spriteTexture, 16, 8, 71);
 
@@ -203,26 +204,29 @@ int main(int argc, char *argv[])
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 done = true;
-            }
-            if(keys[SDL_SCANCODE_RIGHT]) {
-                player.xAccle = 5;
-            } else if (keys[SDL_SCANCODE_LEFT]) {
-                player.xAccle = -5;
-            }  else {
-                player.xAccle = 0;
-            }
-            if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && player.collidedBottom == true) {
-                jmpAmt = 0;
-                player.yVelocity = 6;
-                jmpAmt++;
-                printf("jumped: %i", jmpAmt);
-            }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
-            else if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && jmpAmt == 1) {
-                player.yVelocity += player.yVelocity;
-                jmpAmt = 0;
-                printf("jumping: %i", jmpAmt);
+            } if(event.type == SDL_KEYDOWN) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && player.collidedBottom == true) {
+                    jmpAmt = 0;
+                    player.yVelocity = 6;
+                    jmpAmt++;
+                    printf("jumped: %i", jmpAmt);
+                }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
+                else if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && jmpAmt == 1) {
+                    player.yVelocity = 12;
+                    jmpAmt = 0;
+                    printf("jumping: %i", jmpAmt);
+                }
             }
         }
+        
+        if(keys[SDL_SCANCODE_RIGHT]) {
+            player.xAccle = 5;
+        } else if (keys[SDL_SCANCODE_LEFT]) {
+            player.xAccle = -5;
+        }  else {
+            player.xAccle = 0;
+        }
+        
         if(enemy.collisionAmt == 1 && enemy.xVelocity == 0 && enemy.collidedBottom == true && enemy.collidedLeft == false && enemy.collidedRight == false ) {
             enemy.xVelocity =  10;
         }
