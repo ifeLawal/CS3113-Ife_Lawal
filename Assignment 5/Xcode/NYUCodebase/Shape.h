@@ -43,6 +43,8 @@ public:
     float height;
     float size;
     float animationRate;
+    float rot;
+    float scl;
     int sides;
     //int level, xPos;
     Matrix modelMatrix;
@@ -87,6 +89,8 @@ public:
     void setPosition(float x, float y, float z);
     
     void updatePosition(float x, float y, float z);
+    
+    void rotate(float rot);
     
     void movement(ShaderProgram* program, float elapsed);
     

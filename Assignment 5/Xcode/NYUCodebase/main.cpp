@@ -281,8 +281,10 @@ int main(int argc, char *argv[])
     verts.push_back(points5);
     verts.push_back(points6);
     
-    Shape sTest(1.0, true, verts);
+    Shape sTest(.5, true, verts);
     Shape sTest2(1.0, true, verts);
+    
+    //Matrix.r
     
     sTest.setPosition(1, 1, 1);
     sTest2.setPosition(-1, 1, 1);
@@ -290,6 +292,9 @@ int main(int argc, char *argv[])
     program.setModelMatrix(modelMatrix);
     program.setProjectionMatrix(projectionMatrix);
     program.setViewMatrix(viewMatrix);
+    
+    //modelMatrix.Rotate(<#float rotation#>);
+    
     
     SDL_Event event;
     bool done = false;
@@ -329,6 +334,10 @@ int main(int argc, char *argv[])
             player.yAccle = -1;
         } else {
             player.yAccle = 0;
+        } if (keys[SDL_SCANCODE_A]) {
+            player.rot = PI/15;
+        } else if (SDL_SCANCODE_D) {
+            player.rot = PI/15;
         }
         
         

@@ -16,10 +16,10 @@ Shape::Shape(){
 Shape::Shape(float wVal, float hVal, float size, bool st, int numSides) : width(wVal), height(hVal)
     , isStatic(st), sides(numSides){
         buildVerts();
-        
+        scl = 1;
 }
 
-Shape::Shape(float sz, bool st, std::vector<Vector> verts) : size(sz), isStatic(st){
+Shape::Shape(float sz, bool st, std::vector<Vector> verts) : size(sz), isStatic(st) {
     
     for(int i=0; i<verts.size();i++) {
         verts[i].x *= size;
@@ -34,8 +34,22 @@ Shape::Shape(float sz, bool st, std::vector<Vector> verts) : size(sz), isStatic(
     }
     xFric = 1;
     yFric = 1;
+    scl = 1;
 }
 
+
+Shape::Shape(const Shape& shp) {
+    
+    for(int i=0; i<shp.vertices.size();i++) {
+        vertices.push_back(shp.vertices[i]);
+    }
+    for(int i=0; i<shp.vertPos.size();i++) {
+        vertPos.push_back(shp.vertPos[i]);
+    }
+    xFric = shp.xFric;
+    yFric = shp.yFric;
+    scl = shp.scl;
+}
 
 void Shape::changeHollow(bool h) {
     hollow = h;
@@ -60,6 +74,12 @@ void Shape::updatePosition(float x, float y, float z) {
     zTrans = zTrans + z;
     modelMatrix.Translate(xTrans, yTrans, zTrans);
     //printf("%f", xTrans);
+}
+
+void Shape::rotate(float rote) {
+    modelMatrix.identity();
+    rot += rote;
+    modelMatrix.Rotate(rot);
 }
 
 void Shape::setMatrices(ShaderProgram* program) {
@@ -97,7 +117,13 @@ void Shape::buildVerts() {
 }
 void Shape::updateVertPos() {
     for(int i = 0; i < vertices.size(); i++) {
-        Vector point(vertices[i].x+xTrans, vertices[i].y+yTrans);
+        float x = vertices[i].x+xTrans;
+        float y = vertices[i].y+yTrans;
+        x = cos(rot)*x - sin(rot)*y;
+        y = sin(rot)*x + cos(rot)*y;
+        x *= scl;
+        y *= scl;
+        Vector point(x, y);
         if(i >= vertPos.size()) {
             vertPos.push_back(point);
         } else{
@@ -160,4 +186,5 @@ void Shape::render(ShaderProgram *program, float elapsed) {
     yTrans += yVelocity * elapsed;
     
     updatePosition(xTrans, yTrans, zTrans);
+    rotate(rot);
 }
