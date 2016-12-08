@@ -11,7 +11,7 @@
 		4113C2471DBE54A400B652AC /* arne_sprites.png in Resources */ = {isa = PBXBuildFile; fileRef = 4113C2461DBE54A400B652AC /* arne_sprites.png */; };
 		4113C24A1DBE775700B652AC /* SpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4113C2481DBE775700B652AC /* SpriteSheet.cpp */; };
 		4119A17C1DEE766A0089BB09 /* characters_3_02.png in Resources */ = {isa = PBXBuildFile; fileRef = 4119A17B1DEE766A0089BB09 /* characters_3_02.png */; };
-		411E6E3D1DF3B33A00E6F94C /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411E6E3B1DF3B33A00E6F94C /* Shapes.cpp */; };
+		411E6E3D1DF3B33A00E6F94C /* Shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411E6E3B1DF3B33A00E6F94C /* Shape.cpp */; };
 		4135B2031DE107A2003E3522 /* myMap.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		4135B2041DE1265D003E3522 /* myMap.txt in Sources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		419EE8761DB317CD00F2E40E /* characters_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 419EE8751DB317CD00F2E40E /* characters_3.png */; };
@@ -43,8 +43,8 @@
 		4113C2481DBE775700B652AC /* SpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteSheet.cpp; sourceTree = "<group>"; };
 		4113C2491DBE775700B652AC /* SpriteSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteSheet.h; sourceTree = "<group>"; };
 		4119A17B1DEE766A0089BB09 /* characters_3_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = characters_3_02.png; path = ../characters_3_02.png; sourceTree = "<group>"; };
-		411E6E3B1DF3B33A00E6F94C /* Shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shapes.cpp; sourceTree = "<group>"; };
-		411E6E3C1DF3B33A00E6F94C /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shapes.h; sourceTree = "<group>"; };
+		411E6E3B1DF3B33A00E6F94C /* Shape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shape.cpp; sourceTree = "<group>"; };
+		411E6E3C1DF3B33A00E6F94C /* Shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shape.h; sourceTree = "<group>"; };
 		4135B2021DE107A2003E3522 /* myMap.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = myMap.txt; sourceTree = "<group>"; };
 		419EE8751DB317CD00F2E40E /* characters_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = characters_3.png; sourceTree = "<group>"; };
 		419EE8771DB447A300F2E40E /* font1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font1.png; sourceTree = "<group>"; };
@@ -190,8 +190,8 @@
 				6DEF23BD1B96CC2600BCE792 /* Matrix.h */,
 				6DEF23BE1B96CC2600BCE792 /* ShaderProgram.cpp */,
 				6DEF23BF1B96CC2600BCE792 /* ShaderProgram.h */,
-				411E6E3B1DF3B33A00E6F94C /* Shapes.cpp */,
-				411E6E3C1DF3B33A00E6F94C /* Shapes.h */,
+				411E6E3B1DF3B33A00E6F94C /* Shape.cpp */,
+				411E6E3C1DF3B33A00E6F94C /* Shape.h */,
 				419EE8821DB6C24C00F2E40E /* Text.cpp */,
 				419EE8801DB6BFE500F2E40E /* Text.h */,
 				6DC707691BA7273500225B7D /* vertex_textured.glsl */,
@@ -285,7 +285,7 @@
 				419EE8871DB6C46D00F2E40E /* Entity.cpp in Sources */,
 				6DEF23C31B96CC2600BCE792 /* ShaderProgram.cpp in Sources */,
 				6DEF23C21B96CC2600BCE792 /* Matrix.cpp in Sources */,
-				411E6E3D1DF3B33A00E6F94C /* Shapes.cpp in Sources */,
+				411E6E3D1DF3B33A00E6F94C /* Shape.cpp in Sources */,
 				419EE8811DB6BFE500F2E40E /* Text.h in Sources */,
 				41BB728F1DCA7D8200F441C9 /* CompositeEntity.cpp in Sources */,
 				6D5A86BA19AE5C710066C1FD /* main.cpp in Sources */,
