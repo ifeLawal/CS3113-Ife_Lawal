@@ -17,6 +17,7 @@ Shape::Shape(float wVal, float hVal, float size, bool st, int numSides) : width(
     , isStatic(st), sides(numSides){
         buildVerts();
         scl = 1;
+        rot = 0;
 }
 
 Shape::Shape(float sz, bool st, std::vector<Vector> verts) : size(sz), isStatic(st) {
@@ -29,12 +30,13 @@ Shape::Shape(float sz, bool st, std::vector<Vector> verts) : size(sz), isStatic(
     if(isStatic) {
         xVelocity = 2*((float)rand()/ (float)RAND_MAX - 1);
         yVelocity = 2*((float)rand()/ (float)RAND_MAX - 1);
-        printf("%f\n", xVelocity);
-        printf("%f\n", yVelocity);
+        //printf("%f\n", xVelocity);
+        //printf("%f\n", yVelocity);
     }
     xFric = 1;
     yFric = 1;
     scl = 1;
+    rot = 0;
 }
 
 
@@ -49,6 +51,14 @@ Shape::Shape(const Shape& shp) {
     xFric = shp.xFric;
     yFric = shp.yFric;
     scl = shp.scl;
+    rot = shp.rot;
+    xTrans = shp.xTrans;
+    yTrans = shp.yTrans;
+    zTrans = shp.zTrans;
+    xAccle = shp.xAccle;
+    yAccle = shp.yAccle;
+    width = shp.width;
+    height = shp.height;
 }
 
 void Shape::changeHollow(bool h) {
@@ -77,9 +87,8 @@ void Shape::updatePosition(float x, float y, float z) {
 }
 
 void Shape::rotate(float rote) {
-    modelMatrix.identity();
-    rot += rote;
-    modelMatrix.Rotate(rot);
+    rot = rote;
+    modelMatrix.setRotation(rot);
 }
 
 void Shape::setMatrices(ShaderProgram* program) {
@@ -117,12 +126,22 @@ void Shape::buildVerts() {
 }
 void Shape::updateVertPos() {
     for(int i = 0; i < vertices.size(); i++) {
-        float x = vertices[i].x+xTrans;
-        float y = vertices[i].y+yTrans;
-        x = cos(rot)*x - sin(rot)*y;
-        y = sin(rot)*x + cos(rot)*y;
-        x *= scl;
-        y *= scl;
+        /*
+        float x = (cos(rot)*xTrans - sin(rot)*yTrans)*scl;
+        float y = (sin(rot)*xTrans + cos(rot)*yTrans)*scl;
+        x = x + vertices[i].x;
+        y = y + vertices[i].y;
+            printf("i: %i, x: %f, y : %f\n", i, x, y);
+        */
+        float x = vertices[i].x*cos(rot) - sin(rot)*vertices[i].y;
+        float y = vertices[i].x*sin(rot) + cos(rot)*vertices[i].y;
+        x = x + xTrans;
+        y = y + yTrans;
+        printf("x: %f, y : %f\n", x, y);
+        x = x * scl;
+        y = y * scl;
+        
+        
         Vector point(x, y);
         if(i >= vertPos.size()) {
             vertPos.push_back(point);
@@ -164,13 +183,14 @@ void Shape::movement(ShaderProgram* program, float elapsed) {
         xVelocity = lerp(xVelocity, 0.0f, elapsed * xFric);
         xVelocity += xAccle * elapsed;
         xTrans += xVelocity * elapsed;
-        printf("%f\n", xVelocity);
+        //printf("%f\n", xVelocity);
         
         
         if(yAccle == 0 && yVelocity < 0.1 && yVelocity > -0.1) {yVelocity = 0;}
         if(xAccle == 0 && xVelocity < 0.1 && xVelocity > -0.1) {xVelocity = 0;}
         
         setPosition(xTrans, yTrans, 0);
+        rotate(rot);
     }
     updateVertPos();
 }
@@ -186,5 +206,5 @@ void Shape::render(ShaderProgram *program, float elapsed) {
     yTrans += yVelocity * elapsed;
     
     updatePosition(xTrans, yTrans, zTrans);
-    rotate(rot);
+
 }

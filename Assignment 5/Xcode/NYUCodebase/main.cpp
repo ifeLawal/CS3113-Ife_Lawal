@@ -322,22 +322,24 @@ int main(int argc, char *argv[])
         }
         
         if(keys[SDL_SCANCODE_RIGHT]) {
-            player.xAccle = 1;
+            player.xAccle = 2;
         } else if (keys[SDL_SCANCODE_LEFT]) {
-            player.xAccle = -1;
+            player.xAccle = -2;
         } else {
             player.xAccle = 0;
         }
         if (keys[SDL_SCANCODE_UP]){
-            player.yAccle = 1;
+            player.yAccle = 2;
         } else if (keys[SDL_SCANCODE_DOWN]) {
-            player.yAccle = -1;
+            player.yAccle = -2;
         } else {
             player.yAccle = 0;
         } if (keys[SDL_SCANCODE_A]) {
-            player.rot = PI/15;
-        } else if (SDL_SCANCODE_D) {
-            player.rot = PI/15;
+            printf("rotate");
+            player.rot += -(PI/15.0);
+        } if (keys[SDL_SCANCODE_D]) {
+            player.rot += PI/15.0;
+            printf("rotate");
         }
         
         
@@ -348,6 +350,8 @@ int main(int argc, char *argv[])
         glClearColor(.1, .1, .1, .7);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        program.setModelMatrix(modelMatrix);
+        modelMatrix.setRotation(PI/15);
         
         colRespone(player, sTest);
         colRespone(player, sTest2);
@@ -360,15 +364,16 @@ int main(int argc, char *argv[])
         while (fixedElapsed >= FIXED_TIMESTEP) {
             fixedElapsed -= FIXED_TIMESTEP;
             sTest.movement(&program, FIXED_TIMESTEP);
-            sTest2.movement(&program, FIXED_TIMESTEP);
+            //sTest2.movement(&program, FIXED_TIMESTEP);
             player.movement(&program, FIXED_TIMESTEP);
+            
         }
         sTest.movement(&program, fixedElapsed);
         sTest2.movement(&program, fixedElapsed);
         player.movement(&program, fixedElapsed);
         
         
-
+        
         
         player.buildShape(&program);
         sTest.buildShape(&program);
