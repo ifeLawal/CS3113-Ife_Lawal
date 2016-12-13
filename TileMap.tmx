@@ -3,11 +3,11 @@
  <tileset firstgid="1" name="Sprites" tilewidth="16" tileheight="16" tilecount="128" columns="16">
   <image source="../Repo/CS3113/assets/sprite_sheets/arne_sprites.png" width="256" height="128"/>
  </tileset>
- <tileset firstgid="129" name="Characters" tilewidth="32" tileheight="32" tilecount="32" columns="8">
-  <image source="../Repo/CS3113/assets/sprite_sheets/characters_3.png" width="256" height="128"/>
+ <tileset firstgid="129" name="Characters" tilewidth="32" tileheight="32" tilecount="32" columns="4">
+  <image source="../Repo/CS3113/assets/sprite_sheets/characters_3.png" width="144" height="72"/>
  </tileset>
  <tileset firstgid="161" name="Characters" tilewidth="18" tileheight="24" tilecount="24" columns="8">
-  <image source="../Repo/CS3113/assets/sprite_sheets/characters_3_02.png" trans="ff00ff" width="144" height="72"/>
+  <image source="../Repo/CS3113/assets/sprite_sheets/characters_3_02.png" trans="ff00ff" width="144" height="70"/>
  </tileset>
  <layer name="Tile Layer 1" width="128" height="32">
   <data encoding="base64">

@@ -126,21 +126,26 @@ void Shape::buildVerts() {
 }
 void Shape::updateVertPos() {
     for(int i = 0; i < vertices.size(); i++) {
-        /*
-        float x = (cos(rot)*xTrans - sin(rot)*yTrans)*scl;
-        float y = (sin(rot)*xTrans + cos(rot)*yTrans)*scl;
-        x = x + vertices[i].x;
-        y = y + vertices[i].y;
+        
+        float x = (cos(rot)*vertices[i].x - sin(rot)*vertices[i].y);
+        float y = (sin(rot)*vertices[i].x + cos(rot)*vertices[i].y);
+        x = x + xTrans;
+        y = y + yTrans;
+        x *= scl;
+        y *= scl;
+        //x = x + vertices[i].x;
+        //y = y + vertices[i].y;
             printf("i: %i, x: %f, y : %f\n", i, x, y);
-        */
+        
+        /*
         float x = vertices[i].x*cos(rot) - sin(rot)*vertices[i].y;
         float y = vertices[i].x*sin(rot) + cos(rot)*vertices[i].y;
         x = x + xTrans;
         y = y + yTrans;
-        printf("x: %f, y : %f\n", x, y);
+        //printf("x: %f, y : %f\n", x, y);
         x = x * scl;
         y = y * scl;
-        
+        */
         
         Vector point(x, y);
         if(i >= vertPos.size()) {
