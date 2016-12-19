@@ -22,10 +22,13 @@
 Text::Text(const std::string& tex, GLuint fontSheet, int size, int spacing) : text(tex), fontTexture(fontSheet) {
     this->size = size;
     this->spacing = spacing;
+    setPosition(xTrans, yTrans, zTrans);
+    float width = text.size() * (size + spacing);
+    xCenter = width/2;
     xTrans = 0;
     yTrans = 0;
     zTrans = 0;
-    setPosition(xTrans, yTrans, zTrans);
+    yCenter = 0.5;
 }
 
 void Text::setMatrices(ShaderProgram *program) {
@@ -49,7 +52,8 @@ void Text::DrawText(ShaderProgram *program, Matrix* modelMat) {
     //program->setModelMatrix(*modelMat);
 
     //modelMat->identity();
-    
+    modelMat->Translate(-xCenter+xTrans, yTrans, zTrans);
+    program->setModelMatrix(*modelMat);
 
     
     float texture_size = 1.0/16.0f;
@@ -94,7 +98,6 @@ void Text::DrawText(ShaderProgram *program, Matrix* modelMat) {
     glDisableVertexAttribArray(program->texCoordAttribute);
     
     //program->setModelMatrix(*modelMat);
-    program->setModelMatrix(*modelMat);
     modelMat->identity();
-    modelMat->Translate(xTrans, yTrans, zTrans);
+    
 }

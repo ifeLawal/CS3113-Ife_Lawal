@@ -21,6 +21,7 @@ class Entity {
     
 public:
     float xTrans, yTrans, zTrans;
+    float xScl, yScl, zScl;
     float width;
     float height;
     float size;
@@ -60,6 +61,8 @@ public:
     
     void movement(ShaderProgram* program, Entity *other, float elapsed);
     
+    void movement(ShaderProgram* program, ReadTileMap rTM, Entity *other, float elapsed);
+    
     void updateIndex(int in);
     
     void updateY(float yC);
@@ -72,7 +75,9 @@ public:
     
     float yCollisionHandling(Entity *other);
     
-    void tileCollision(ReadTileMap rTM);
+    void xtileCollision(ReadTileMap rTM);
+    
+    void ytileCollision(ReadTileMap rTM);
     
     void setMatrices(ShaderProgram *program);
     

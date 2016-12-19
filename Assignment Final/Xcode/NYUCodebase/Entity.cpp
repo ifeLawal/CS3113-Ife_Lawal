@@ -27,6 +27,9 @@ Entity::Entity(float wVal, float hVal, float s, bool st, EntityType eType, Sprit
     yFric = .5;
     collisionAmt = 0;
     animationRate = 0;
+    xScl = 1;
+    yScl = 1;
+    zScl = 1;
     //active = false;
 }
 
@@ -66,17 +69,30 @@ void Entity::resetCollisionFlags() {
 }
 
 void Entity::movement(ShaderProgram *program, Entity *other, float elapsed) {
+    
     if(!isStatic) {
+        if(xVelocity < 0) {
+            xScl = -1;
+        } else {
+            xScl = 1;
+        }
         landed = false;
         animationRate = animationRate + 10 * elapsed;
-        printf("\n%f", animationRate);
-        if(animationRate / 1.5 > 1.0) {
-            animationRate = 0;
+        //printf("\n%f", animationRate);
+        if(collidedBottom == true) {
             if(xVelocity < 0.1 && xVelocity > -0.1) {
-                sprite.animateIdle();
+                if(animationRate / 2.3 > 1.0) {
+                    sprite.animateIdle();
+                    animationRate = 0;
+                }
             } else {
-                sprite.animateWalk();
+                if(animationRate / 1.8 > 1.0) {
+                    sprite.animateWalk();
+                    animationRate = 0;
+                }
             }
+        } else {
+            sprite.index = sprite.idleSprites[0];
         }
         
         
@@ -98,13 +114,70 @@ void Entity::movement(ShaderProgram *program, Entity *other, float elapsed) {
         
         
         setPosition(xTrans, yTrans, zTrans);
-        if(xVelocity < 0) {
-            //modelMatrix.setScale(.2, .1, 1);
-            //modelMatrix.identity();
-        }
+        //modelMatrix.Scale(xScl, <#float y#>, <#float z#>)
 //        printf("y: %lf / ", yTrans);
 //        printf("x: %lf\n", xTrans);
     }
+}
+
+void Entity::movement(ShaderProgram* program, ReadTileMap rTM, Entity *other, float elapsed) {
+    if(!isStatic) {
+        if(xVelocity < 0) {
+            xScl = -1;
+        } else {
+            xScl = 1;
+        }
+        landed = false;
+        animationRate = animationRate + 10 * elapsed;
+        //printf("\n%f", animationRate);
+        if(collidedBottom == true) {
+            if(xVelocity < 0.1 && xVelocity > -0.1) {
+                if(animationRate / 1.4 > 1.0) {
+                    sprite.animateIdle();
+                    animationRate = 0;
+                }
+            } else {
+                if(animationRate / 1.8 > 1.0) {
+                    sprite.animateWalk();
+                    animationRate = 0;
+                }
+            }
+        } else {
+            sprite.index = sprite.idleSprites[0];
+        }
+        /*if(animationRate)
+        if(animationRate / 1.8 > 1.0) {
+            animationRate = 0;
+            if(collidedBottom == true) {
+                if(xVelocity < 0.1 && xVelocity > -0.1) {
+                    sprite.animateIdle();
+                } else {
+                    sprite.animateWalk();
+                }
+            }
+        }*/
+        
+        
+        yVelocity = lerp(yVelocity, 0.0f, elapsed * yFric);
+        yVelocity += (yAccle + yGravity) * elapsed;
+        yTrans += yVelocity * elapsed;
+        yTrans += yCollisionHandling(other);
+        ytileCollision(rTM);
+        
+        
+        
+        if(landed) {printf("landed");}
+        
+        xVelocity = lerp(xVelocity, 0.0f, elapsed * xFric);
+        xVelocity += xAccle * elapsed;
+        xTrans += xVelocity * elapsed;
+        xTrans += xCollisionHandling(other);
+        xtileCollision(rTM);
+        
+        
+        setPosition(xTrans, yTrans, zTrans);
+    }
+
 }
 
 bool Entity::isColliding(Entity *other) {
@@ -191,7 +264,8 @@ float Entity::yCollisionHandling(Entity *other) {
     
     return 0;
 }
-void Entity::tileCollision(ReadTileMap rTM) {
+
+void Entity::xtileCollision(ReadTileMap rTM) {
     //resetCollisionFlags();
     bool pastCollidedB = collidedBottom;
     float left = xTrans - width/2;
@@ -206,40 +280,30 @@ void Entity::tileCollision(ReadTileMap rTM) {
         xVelocity = 0;
         for(int i = 0; i < rTM.types.size(); i++) {
             if(rTM.types[i] == pType) {
-                setPosition(rTM.xPosList[i], -rTM.yPosList[i], 0);
+                setPosition(rTM.xPosList[i]+width, -rTM.yPosList[i], 0);
             }
             
         }
         return;
     }
     else {
+        
         if(rTM.isSolid(gridX, gridY)) {
             collidedLeft = true;
             xVelocity = 0;
-            xTrans += .05 + ((TILE_SIZE * gridX + TILE_SIZE) - left);
+            xTrans += ((TILE_SIZE * gridX + TILE_SIZE) - left);
             collisionAmt++;
         } else {collidedLeft =false;}
+        
         rTM.worldToTileCoordinates(right, yTrans, &gridX, &gridY);
         if(rTM.isSolid(gridX, gridY)) {
             collidedRight = true;
             xVelocity = 0;
-            xTrans -= .05 + (right - TILE_SIZE * gridX);
+            xTrans -= (right - TILE_SIZE * gridX);
             collisionAmt++;
         } else {collidedRight =false;}
-        rTM.worldToTileCoordinates(xTrans, bottom, &gridX, &gridY);
-        if(rTM.isSolid(gridX, gridY)) {
-            collidedBottom = true;
-            yVelocity = 0;
-            yTrans += (-TILE_SIZE * gridY - bottom);
-            collisionAmt++;
-        } else {collidedBottom =false;}
-        rTM.worldToTileCoordinates(xTrans, top, &gridX, &gridY);
-        if(rTM.isSolid(gridX, gridY)) {
-            collidedTop = true;
-            yVelocity = 0;
-            yTrans -= (top - (-TILE_SIZE * gridY)-TILE_SIZE) + .01;
-            collisionAmt++;
-        } else {collidedTop =false;}
+
+        
     }
     if(pastCollidedB == false && collidedBottom == true) {
         landed = true;
@@ -249,6 +313,57 @@ void Entity::tileCollision(ReadTileMap rTM) {
     }
     
 }
+
+void Entity::ytileCollision(ReadTileMap rTM) {
+    //resetCollisionFlags();
+    bool pastCollidedB = collidedBottom;
+    float left = xTrans - width/2;
+    float right = xTrans + width/2;
+    float bottom = yTrans - height/2;
+    float top = yTrans + height/2;
+    int gridX;
+    int gridY;
+    rTM.worldToTileCoordinates(left, yTrans, &gridX, &gridY);
+    
+    if(gridY > rTM.mapHeight || gridY < 0.0 || gridX < 0.0 || rTM.isDeathTile(gridX, gridY)) {
+        xVelocity = 0;
+        for(int i = 0; i < rTM.types.size(); i++) {
+            if(rTM.types[i] == pType) {
+                setPosition(rTM.xPosList[i]+width, -rTM.yPosList[i], 0);
+            }
+            
+        }
+        return;
+    }
+    else {
+        
+        rTM.worldToTileCoordinates(xTrans, bottom, &gridX, &gridY);
+        if(rTM.isSolid(gridX, gridY)) {
+            collidedBottom = true;
+            yVelocity = 0;
+            yTrans += (-TILE_SIZE * gridY - bottom);
+            collisionAmt++;
+        } else {collidedBottom =false;}
+        
+        rTM.worldToTileCoordinates(xTrans, top, &gridX, &gridY);
+        if(rTM.isSolid(gridX, gridY)) {
+            collidedTop = true;
+            yVelocity = 0;
+            yTrans -= (top - (-TILE_SIZE * gridY)) + height;
+            collisionAmt++;
+        } else {collidedTop =false;}
+        
+        
+    }
+    if(pastCollidedB == false && collidedBottom == true) {
+        landed = true;
+        printf("landed");
+    } else {
+        landed = false;
+    }
+    
+}
+
 void Entity::setMatrices(ShaderProgram* program) {
     program->setModelMatrix(modelMatrix);
 }
@@ -257,7 +372,7 @@ void Entity::drawSprite(ShaderProgram* program){
     GLuint spriteSheet = sprite.spriteSheet;
     setMatrices(program);
     GLfloat texCoords[12];
-
+    
     
     if(sprite.index > -1) {
         int index = sprite.index;
@@ -272,10 +387,10 @@ void Entity::drawSprite(ShaderProgram* program){
         
         GLfloat texCoordsCp [] = {
             u, v+spriteHeight,
-            u+spriteWidth, v+spriteHeight,
-            u+spriteWidth, v,
+            u+spriteWidth*xScl, v+spriteHeight,
+            u+spriteWidth*xScl, v,
             u, v+spriteHeight,
-            u+spriteWidth, v,
+            u+spriteWidth*xScl, v,
             u, v
         };
         
@@ -334,6 +449,9 @@ void Entity::drawSprite(ShaderProgram* program){
     glDisableVertexAttribArray(program->positionAttribute);
     
     glDisableVertexAttribArray(program->texCoordAttribute);
+    
+    //printf("%f", xScl);
+    //modelMatrix.setScale(xScl, yScl, zScl);
 
     
 }
@@ -360,53 +478,5 @@ void Entity::render(ShaderProgram *program, float elapsed) {
     yTrans += yVelocity * elapsed;
     
     updatePosition(xTrans, yTrans, zTrans);
+    //modelMatrix.Scale(xScl, yScl, zScl);
 }
-
-
-
-/*
- void Entity::DrawSpriteSheetSprite(ShaderProgram *program, int index, int spriteCountX, int spriteCountY) {
- setMatrices(program);
- 
- float u = (float)(((int)index) % spriteCountX) / (float) spriteCountX;
- float v = (float)(((int)index) / spriteCountX) / (float) spriteCountY;
- float spriteWidth = 1.0/(float)spriteCountX;
- float spriteHeight = 1.0/(float)spriteCountY;
- 
- GLfloat texCoords [] = {
- u, v+spriteHeight,
- u+spriteWidth, v+spriteHeight,
- u+spriteWidth, v,
- u, v+spriteHeight,
- u+spriteWidth, v,
- u, v
- };
- /*
- u, v+spriteHeight,
- u+spriteWidth, v,
- u, v,
- u+spriteWidth, v,
- u, v+spriteHeight,
- u+spriteWidth, v+spriteHeight
- };
- 
- 
- //float vertices[] = {1.5f, -1.5f, 1.0f, 1.5f, -.7f, .7f};
- 
- 
- glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices);
- glEnableVertexAttribArray(program->positionAttribute);
- 
- 
- glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
- glEnableVertexAttribArray(program->texCoordAttribute);
- 
- glBindTexture(GL_TEXTURE_2D, spriteSheet);
- glDrawArrays(GL_TRIANGLES, 0, 6);
- 
- glDisableVertexAttribArray(program->positionAttribute);
- 
- glDisableVertexAttribArray(program->texCoordAttribute);
- }
- */
-

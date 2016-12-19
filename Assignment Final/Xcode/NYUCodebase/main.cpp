@@ -25,7 +25,7 @@ const std::string levelFile1 = "NYUCodebase.app/Contents/Resources/myMap.txt";
 const std::string levelFile = "NYUCodebase.app/Contents/Resources/Stage1.txt";
 const std::string levelFile2 = "NYUCodebase.app/Contents/Resources/Stage2.txt";
 const std::string levelFile3 = "NYUCodebase.app/Contents/Resources/Stage3.txt";
-const float heightRatio = 1.0*5;
+const float heightRatio = 1.0*7.0;
 const float wideRatio = heightRatio*(16.0/9.0);
 const float aspectRatio = 16.0/9.0;
 const float PI = 3.14159265;
@@ -41,11 +41,10 @@ Matrix viewMatrix;
 Matrix projectionMatrix;
 
 enum GameState {STATE_MAIN_MENU, STATE_GAME_LEVEL_1, STATE_GAME_LEVEL_2, STATE_GAME_LEVEL_3};
-enum PauseState {UNPAUSED, QUIT_STATE};
 
 int state;
-int pauseState;
 int pastState;
+bool paused;
 
 GLuint LoadTexture(const char *image_path) {
     SDL_Surface *surface = IMG_Load(image_path);
@@ -164,7 +163,7 @@ int main(int argc, char *argv[])
     
     state = 0;
     pastState = state;
-    pauseState = 0;
+    paused = false;
     
     GLuint spriteTexture = LoadTexture("arne_sprites.png");
     GLuint charTexture = LoadTexture("characters_3_02.png");
@@ -185,8 +184,10 @@ int main(int argc, char *argv[])
     SpriteSheet playerSheet(charTexture, 8, 3, 8);
     SpriteSheet playerSheet2(charTexture, 8, 3, 0);
     
-    playerSheet.fillIdle(3, 13, 14, 15);
+    playerSheet.fillIdle(4, 13, 14, 15, 12);
     playerSheet.fillWalk(4, 8, 9, 10, 11);
+    playerSheet2.fillIdle(4, 5, 6, 7, 4);
+    playerSheet2.fillWalk(4, 0, 1, 2, 3);
     
     SpriteSheet legSheet(spriteTexture, 16, 8, 71);
 
@@ -211,14 +212,18 @@ int main(int argc, char *argv[])
     //CompositeEntity fullPlayer(player,leg);
     
     //fullPlayer.updatePosition(.2, 0, 0);
-    Text test("Hello", fontTexture, 1, -.01);
-    Text test2("Game Start", fontTexture, 1, -.01);
-    Text stageCh("+", fontTexture, 1, -.01);
+    Text test("Our Game", fontTexture, 2, -.01);
+    Text stage1("Stage 1", fontTexture, 1.3, -.01);
+    Text stage2("Stage 2", fontTexture, 1.3, -.01);
+    Text stage3("Stage 3", fontTexture, 1.3, -.01);
+    Text quitTest("Press Q to Quit Game", fontTexture, 1, -.001);
     //Text test4("-", fontTexture, 1, -.01);
     
-    test.updatePosition(-2, 2, 0);
-    //test2.updatePosition(-wideRatio/2, 1, 0);
-    //stageCh.updatePosition(0, 0, 0);
+    test.updatePosition(0, 4, 0);
+    stage1.updatePosition(0, 2, 0);
+    stage2.updatePosition(0, 1, 0);
+    stage3.updatePosition(0, 0, 0);
+    quitTest.updatePosition(0, 1, 0);
     
     SDL_Event event;
     bool done = false;
@@ -228,26 +233,52 @@ int main(int argc, char *argv[])
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 done = true;
             } if(event.type == SDL_KEYDOWN) {
-                if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && player.collidedBottom == true) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_ESCAPE && state > 0) {
+                        paused = !paused;
+                }
+                if(event.key.keysym.scancode == SDL_SCANCODE_Q && paused) {
+                    state = STATE_MAIN_MENU;
+                    paused = false;
+                }
+                if(event.key.keysym.scancode == SDL_SCANCODE_W && player.collidedBottom == true) {
                     jmpAmt = 0;
                     player.yVelocity = 6;
                     jmpAmt++;
                     printf("jumped: %i", jmpAmt);
-                }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
-                else if(event.key.keysym.scancode == SDL_SCANCODE_SPACE && jmpAmt == 1) {
+                }
+                else if(event.key.keysym.scancode == SDL_SCANCODE_W && jmpAmt == 1) {
                     player.yVelocity = 12;
                     jmpAmt = 0;
                     printf("jumping: %i", jmpAmt);
                 }
+                if(event.key.keysym.scancode == SDL_SCANCODE_I && player.collidedBottom == true) {
+                    jmpAmt = 0;
+                    player2.yVelocity = 6;
+                    jmpAmt++;
+                    printf("jumped: %i", jmpAmt);
+                }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
+                else if(event.key.keysym.scancode == SDL_SCANCODE_I && jmpAmt == 1) {
+                    player2.yVelocity = 12;
+                    jmpAmt = 0;
+                    printf("jumping: %i", jmpAmt);
+                }
+                }
+
             }
-        }
         
-        if(keys[SDL_SCANCODE_RIGHT]) {
+        if(keys[SDL_SCANCODE_D]) {
             player.xAccle = 5;
-        } else if (keys[SDL_SCANCODE_LEFT]) {
+        } else if (keys[SDL_SCANCODE_A]) {
             player.xAccle = -5;
         }  else {
             player.xAccle = 0;
+        }
+        if(keys[SDL_SCANCODE_L]) {
+            player2.xAccle = 5;
+        } else if (keys[SDL_SCANCODE_J]) {
+            player2.xAccle = -5;
+        }  else {
+            player2.xAccle = 0;
         }
         
         if(enemy.collisionAmt == 1 && enemy.xVelocity == 0 && enemy.collidedBottom == true && enemy.collidedLeft == false && enemy.collidedRight == false ) {
@@ -264,17 +295,7 @@ int main(int argc, char *argv[])
             if(keys[SDL_SCANCODE_2]) {state = STATE_GAME_LEVEL_2;}
             if(keys[SDL_SCANCODE_3]) {state = STATE_GAME_LEVEL_3;}
         }
-        if(pauseState==QUIT_STATE) {
-            if(keys[SDL_SCANCODE_Q]) {
-                state = STATE_MAIN_MENU;
-                pauseState = UNPAUSED;
-            }if(keys[SDL_SCANCODE_ESCAPE]) {
-                pauseState = UNPAUSED;
-            }
-        }
-        else if(state > 0 && keys[SDL_SCANCODE_ESCAPE]) {
-            pauseState = QUIT_STATE;
-        }
+
         
         float ticks = (float)SDL_GetTicks()/1000.0f;
         float elapsed = ticks - lastFrameTicks;
@@ -283,36 +304,45 @@ int main(int argc, char *argv[])
 
         //loop
         
-
-        
         glClearColor(.9, .9, .9, .7);
         glClear(GL_COLOR_BUFFER_BIT);
-      
+        program.setModelMatrix(modelMatrix);
+        modelMatrix.identity();
+        printf("%i", state);
+        
         if(state==STATE_MAIN_MENU) {
+            float xPos = (player.xTrans+player2.xTrans)/2;
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
             test.DrawText(&program, &modelMatrix);
-            test2.DrawText(&program, &modelMatrix);
-            stageCh.DrawText(&program, &modelMatrix);
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            stage1.DrawText(&program, &modelMatrix);
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            stage2.DrawText(&program, &modelMatrix);
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            stage3.DrawText(&program, &modelMatrix);
         }
         
         if(state==STATE_GAME_LEVEL_1) {
-            
             //check for change in states which symbolizes the very beginning of the stage entry
-            if(pastState != state && pauseState != QUIT_STATE) {
-                
+            //and check if game is paused
+            if(pastState != state && !paused) {
                 //rTM.readFile(levelFile);
                 for(int i = 0; i < rTM.types.size(); i++) {
                     if(rTM.types[i] == "Player1") {
-                        player.setPosition(rTM.xPosList[i], -rTM.yPosList[i], 0);
+                        player.setPosition(rTM.xPosList[i]+player.width, -rTM.yPosList[i], 0);
                         //printf("hey\n");
                     }
                     else if(rTM.types[i] == "Player2") {
-                        player2.setPosition(rTM.xPosList[i], -rTM.yPosList[i], 0);
+                        player2.setPosition(rTM.xPosList[i]+player.width, -rTM.yPosList[i], 0);
                     }
                 }
             }
             
-            //follow player with view matrix
-            program.setViewMatrix(player.modelMatrix.inverse());
+            //make view matrix between the two characters
+            viewMatrix.identity();
+            viewMatrix.Translate(-((player.xTrans+player2.xTrans)/2), -player.yTrans, 1);
+            //viewMatrix.Scale(0.5, 0.5, 1);
+            program.setViewMatrix(viewMatrix);
 
             //reset matrix and set it in prep for players and screen
             modelMatrix.identity();
@@ -322,12 +352,15 @@ int main(int argc, char *argv[])
             rTM.renderMap(&program, spriteTexture);
             
             //check if we are in paused state
-            if(pauseState==QUIT_STATE) {
+            if(paused) {
                 //if paused show quit overlay text
-                DrawText(&program, fontTexture, "Press Q again to quit", 1, .01);
+                float xPos = (player.xTrans+player2.xTrans)/2;
+                modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+                quitTest.DrawText(&program, &modelMatrix);
+
             }
             //if not paused do movements and collisions
-            else if(pauseState==UNPAUSED) {
+            else {
                 float fixedElapsed = elapsed;
                 if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
                     fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -335,16 +368,13 @@ int main(int argc, char *argv[])
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
                     //player.drawSprite(&program);
-                    player.movement(&program, &enemy, FIXED_TIMESTEP);
-                    player2.movement(&program, &enemy, FIXED_TIMESTEP);
+                    player.movement(&program, rTM, &enemy, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM, &enemy, FIXED_TIMESTEP);
                     //enemy.movement(&program, &player, FIXED_TIMESTEP);
                     //leg.movement(&program, &tester, FIXED_TIMESTEP);
                 }
-                player.movement(&program, &enemy, fixedElapsed);
-                player2.movement(&program, &enemy, fixedElapsed);
-                
-                player.tileCollision(rTM);
-                player2.tileCollision(rTM);
+                player.movement(&program, rTM, &enemy, fixedElapsed);
+                player2.movement(&program, rTM, &enemy, fixedElapsed);
             }
             
             //draw players
@@ -354,35 +384,37 @@ int main(int argc, char *argv[])
         
         if(state==STATE_GAME_LEVEL_2) {
             
-            if(pastState != state && pauseState != QUIT_STATE) {
+            if(pastState != state && !paused) {
                 
                 for(int i = 0; i < rTM2.types.size(); i++) {
                     if(rTM2.types[i] == "Player1") {
-                        player.setPosition(rTM2.xPosList[i], -rTM2.yPosList[i], 0);
+                        player.setPosition(rTM2.xPosList[i]+player.width, -rTM2.yPosList[i], 0);
                     }
                     else if(rTM2.types[i] == "Player2") {
-                        player2.setPosition(rTM2.xPosList[i], -rTM2.yPosList[i], 0);
+                        player2.setPosition(rTM2.xPosList[i]+player.width, -rTM2.yPosList[i], 0);
                     }
                 }
             }
             
-            //follow player with view matrix
-            program.setViewMatrix(player.modelMatrix.inverse());
-            
-            //reset matrix and set it in prep for players and screen
-            modelMatrix.identity();
-            program.setModelMatrix(modelMatrix);
+            //make view matrix between the two characters
+            viewMatrix.identity();
+            viewMatrix.Translate(-((player.xTrans+player2.xTrans)/2), -player.yTrans, 1);
+            //viewMatrix.Scale(0.5, 0.5, 1);
+            program.setViewMatrix(viewMatrix);
             
             //render stage 2 map by sending map texture and program data
             rTM2.renderMap(&program, spriteTexture);
 
             //check if we are in paused state
-            if(pauseState==QUIT_STATE) {
+            if(paused) {
                 //if paused show quit overlay text
-                DrawText(&program, fontTexture, "Press Q again to quit", 1, .01);
+                float xPos = (player.xTrans+player2.xTrans)/2;
+                modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+                quitTest.DrawText(&program, &modelMatrix);
+                
             }
             //if not paused do movements and collisions
-            else if(pauseState==UNPAUSED) {
+            else {
                 float fixedElapsed = elapsed;
                 if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
                     fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -390,14 +422,12 @@ int main(int argc, char *argv[])
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
 
-                    player.movement(&program, &enemy, FIXED_TIMESTEP);
-                    player2.movement(&program, &enemy, FIXED_TIMESTEP);
+                    player.movement(&program, rTM2, &enemy, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM2, &enemy, FIXED_TIMESTEP);
                 }
-                player.movement(&program, &enemy, fixedElapsed);
-                player2.movement(&program, &enemy, fixedElapsed);
-                
-                player.tileCollision(rTM2);
-                player2.tileCollision(rTM2);
+                player.movement(&program, rTM2, &enemy, fixedElapsed);
+                player2.movement(&program, rTM2, &enemy, fixedElapsed);
+            
             }
             
             
@@ -408,33 +438,38 @@ int main(int argc, char *argv[])
         
         if(state==STATE_GAME_LEVEL_3) {
             
-            if(pastState != state && pauseState != QUIT_STATE) {
+            if(pastState != state && !paused) {
                 
                 
                 for(int i = 0; i < rTM3.types.size(); i++) {
                     if(rTM3.types[i] == "Player1") {
-                        player.setPosition(rTM3.xPosList[i], -rTM3.yPosList[i], 0);
+                        player.setPosition(rTM3.xPosList[i]+player.width, -rTM3.yPosList[i], 0);
                         
                     }
                     else if(rTM3.types[i] == "Player2") {
-                        player2.setPosition(rTM3.xPosList[i], -rTM3.yPosList[i], 0);
+                        player2.setPosition(rTM3.xPosList[i]+player.width, -rTM3.yPosList[i], 0);
                     }
                 }
             }
             
-            program.setViewMatrix(player.modelMatrix.inverse());
-            
-            modelMatrix.identity();
-            program.setModelMatrix(modelMatrix);
+            //make view matrix between the two characters
+            viewMatrix.identity();
+            viewMatrix.Translate(-((player.xTrans+player2.xTrans)/2), -player.yTrans, 1);
+            //viewMatrix.Scale(0.5, 0.5, 1);
+            program.setViewMatrix(viewMatrix);
             
             rTM3.renderMap(&program, spriteTexture);
             
-            if(pauseState==QUIT_STATE) {
+            //check if we are in paused state
+            if(paused) {
                 //if paused show quit overlay text
-                DrawText(&program, fontTexture, "Press Q again to quit", 1, .01);
+                float xPos = (player.xTrans+player2.xTrans)/2;
+                modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+                quitTest.DrawText(&program, &modelMatrix);
+                
             }
             //if not paused do movements and collisions
-            else if(pauseState==UNPAUSED) {
+            else {
                 float fixedElapsed = elapsed;
                 if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
                     fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -442,14 +477,13 @@ int main(int argc, char *argv[])
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
                     
-                    player.movement(&program, &enemy, FIXED_TIMESTEP);
-                    player2.movement(&program, &enemy, FIXED_TIMESTEP);
+                    player.movement(&program, rTM3, &enemy, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM3, &enemy, FIXED_TIMESTEP);
                     
                 }
-                player.movement(&program, &enemy, fixedElapsed);
-                player2.movement(&program, &enemy, fixedElapsed);
-                player.tileCollision(rTM3);
-                player2.tileCollision(rTM3);
+                player.movement(&program, rTM3, &enemy, fixedElapsed);
+                player2.movement(&program, rTM3, &enemy, fixedElapsed);
+
             }
             
             //draw sprites
