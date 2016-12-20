@@ -12,6 +12,7 @@
 		4113C24A1DBE775700B652AC /* SpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4113C2481DBE775700B652AC /* SpriteSheet.cpp */; };
 		4135B2031DE107A2003E3522 /* myMap.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		4135B2041DE1265D003E3522 /* myMap.txt in Sources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
+		41425CE91E09BDDF00D78433 /* Bullet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41425CE71E09BDDF00D78433 /* Bullet.cpp */; };
 		41622BD61DFF444C0029C8AC /* Stage1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41622BD51DFF444C0029C8AC /* Stage1.txt */; };
 		41622BD81DFF44570029C8AC /* Stage2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41622BD71DFF44570029C8AC /* Stage2.txt */; };
 		41622BDA1DFF445E0029C8AC /* Stage3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41622BD91DFF445E0029C8AC /* Stage3.txt */; };
@@ -45,6 +46,8 @@
 		4113C2481DBE775700B652AC /* SpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteSheet.cpp; sourceTree = "<group>"; };
 		4113C2491DBE775700B652AC /* SpriteSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteSheet.h; sourceTree = "<group>"; };
 		4135B2021DE107A2003E3522 /* myMap.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = myMap.txt; sourceTree = "<group>"; };
+		41425CE71E09BDDF00D78433 /* Bullet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bullet.cpp; sourceTree = "<group>"; };
+		41425CE81E09BDDF00D78433 /* Bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bullet.h; sourceTree = "<group>"; };
 		41622BD51DFF444C0029C8AC /* Stage1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Stage1.txt; sourceTree = "<group>"; };
 		41622BD71DFF44570029C8AC /* Stage2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Stage2.txt; sourceTree = "<group>"; };
 		41622BD91DFF445E0029C8AC /* Stage3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Stage3.txt; sourceTree = "<group>"; };
@@ -182,6 +185,8 @@
 				41BD3BF61DFFADEE0083EE58 /* characters_3_02.png */,
 				419EE8851DB6C46D00F2E40E /* Entity.cpp */,
 				419EE8861DB6C46D00F2E40E /* Entity.h */,
+				41425CE71E09BDDF00D78433 /* Bullet.cpp */,
+				41425CE81E09BDDF00D78433 /* Bullet.h */,
 				41BB728D1DCA7D8200F441C9 /* CompositeEntity.cpp */,
 				41BB728E1DCA7D8200F441C9 /* CompositeEntity.h */,
 				4135B2021DE107A2003E3522 /* myMap.txt */,
@@ -293,6 +298,7 @@
 				6DEF23C31B96CC2600BCE792 /* ShaderProgram.cpp in Sources */,
 				6DEF23C21B96CC2600BCE792 /* Matrix.cpp in Sources */,
 				419EE8811DB6BFE500F2E40E /* Text.h in Sources */,
+				41425CE91E09BDDF00D78433 /* Bullet.cpp in Sources */,
 				41BB728F1DCA7D8200F441C9 /* CompositeEntity.cpp in Sources */,
 				6D5A86BA19AE5C710066C1FD /* main.cpp in Sources */,
 				419EE8841DB6C24C00F2E40E /* Text.cpp in Sources */,

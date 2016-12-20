@@ -246,7 +246,7 @@ float Entity::xCollisionHandling(Entity *other) {
 float Entity::yCollisionHandling(Entity *other) {
     bool pastCollidedB = collidedBottom;
     if(isColliding(other)) {
-        printf("collision\n");
+        //printf("collision\n");
         float x_distance = fabs(other->yTrans - yTrans);
         float penetration = fabs(x_distance - other->height/2 - height/2);
         float yMove = penetration + .005;

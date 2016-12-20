@@ -10,6 +10,7 @@
 #include "Entity.h"
 #include "CompositeEntity.h"
 #include "ReadTileMap.h"
+#include "Bullet.h"
 
 
 #ifdef _WINDOWS
@@ -189,7 +190,7 @@ int main(int argc, char *argv[])
     playerSheet2.fillIdle(4, 5, 6, 7, 4);
     playerSheet2.fillWalk(4, 0, 1, 2, 3);
     
-    SpriteSheet legSheet(spriteTexture, 16, 8, 71);
+    SpriteSheet bTestSheet(spriteTexture, 16, 8, 71);
 
     float h = 1;
     Entity enemy(h, h, 1, false, ENTITY_ENEMY, &sheetTest);
@@ -197,19 +198,41 @@ int main(int argc, char *argv[])
     
     Entity player(h, h, 1, false, ENTITY_PLAYER, &playerSheet);
     Entity player2(h, h, 1, false, ENTITY_PLAYER, &playerSheet2);
-    Entity leg(h, h, .2, false, ENTITY_PLAYER, &legSheet);
-
+    Bullet bTest(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
+    Bullet bTest2(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
+    
+    bool p1Shot = false;
+    bool p2Shot = false;
+    int p1Index = 0;
+    int p2Index = 0;
+    int index = 0;
+    int maxBullets = 8;
+    /*
+    std::vector<Bullet> p1Bullets;
+    std::vector<Bullet> p2Bullets;
+    
+    for(int i = 0; i < maxBullets; i++) {
+        Bullet bullet(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
+        p1Bullets.push_back(bullet);
+    }
+    for(int i = 0; i < maxBullets; i++) {
+        Bullet bullet(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
+        p2Bullets.push_back(bullet);
+    }
+     */
+    //printf("size: %i", p1Bullets.size());
     player.setPosition(0, 0, 0);
     player.pType = "Player1";
+    
     player2.setPosition(0, 0, 0);
     player2.pType = "Player2";
-    leg.setPosition(0, 0, 0);
+    bTest.setPosition(0, 0, 0);
     
     
     
-    int xGrid = 0;
-    int yGrid = 0;
-    //CompositeEntity fullPlayer(player,leg);
+    //int xGrid = 0;
+    //int yGrid = 0;
+    //CompositeEntity fullPlayer(player,bTest);
     
     //fullPlayer.updatePosition(.2, 0, 0);
     Text test("Our Game", fontTexture, 2, -.01);
@@ -262,9 +285,29 @@ int main(int argc, char *argv[])
                     jmpAmt = 0;
                     printf("jumping: %i", jmpAmt);
                 }
+                if(event.key.keysym.scancode == SDL_SCANCODE_LSHIFT) {
+                    p1Shot = true;
+                    p1Index++;
+                    p1Index = p1Index % maxBullets;
+                    if(player.xVelocity >= 0) {
+                        bTest.xVelocity = 15;
+                    } else {
+                       bTest.xVelocity = -15;
+                    }
                 }
-
+                if(event.key.keysym.scancode == SDL_SCANCODE_RSHIFT) {
+                    p2Shot = true;
+                    p2Index++;
+                    p2Index = p2Index % maxBullets;
+                    if(player2.xVelocity >= 0) {
+                        bTest2.xVelocity = 15;
+                    } else {
+                        bTest2.xVelocity = -15;
+                    }
+                }
             }
+
+        }
         
         if(keys[SDL_SCANCODE_D]) {
             player.xAccle = 5;
@@ -308,7 +351,7 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         program.setModelMatrix(modelMatrix);
         modelMatrix.identity();
-        printf("%i", state);
+        //printf("%i", state);
         
         if(state==STATE_MAIN_MENU) {
             float xPos = (player.xTrans+player2.xTrans)/2;
@@ -361,6 +404,12 @@ int main(int argc, char *argv[])
             }
             //if not paused do movements and collisions
             else {
+                if(p1Shot) {
+                    bTest.setPosition(player.xTrans, player.yTrans, player.zTrans);
+                }
+                if(p2Shot) {
+                    bTest2.setPosition(player2.xTrans, player2.yTrans, player2.zTrans);
+                }
                 float fixedElapsed = elapsed;
                 if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
                     fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -370,9 +419,19 @@ int main(int argc, char *argv[])
                     //player.drawSprite(&program);
                     player.movement(&program, rTM, &enemy, FIXED_TIMESTEP);
                     player2.movement(&program, rTM, &enemy, FIXED_TIMESTEP);
-                    //enemy.movement(&program, &player, FIXED_TIMESTEP);
-                    //leg.movement(&program, &tester, FIXED_TIMESTEP);
+                   
+                    bTest.movement(&program, &enemy, FIXED_TIMESTEP);
+                    bTest2.movement(&program, &enemy, FIXED_TIMESTEP);
                 }
+                /*
+                for(int i = 0; i < p1Bullets.size(); i++) {
+                    p1Bullets[i].movement(&program, &enemy, fixedElapsed);
+                    p2Bullets[i].movement(&program, &enemy, fixedElapsed);
+                    
+                }
+                 */
+                bTest.movement(&program, &enemy, fixedElapsed);
+                bTest2.movement(&program, &enemy, fixedElapsed);
                 player.movement(&program, rTM, &enemy, fixedElapsed);
                 player2.movement(&program, rTM, &enemy, fixedElapsed);
             }
@@ -380,6 +439,15 @@ int main(int argc, char *argv[])
             //draw players
             player.drawSprite(&program);
             player2.drawSprite(&program);
+            bTest.drawSprite(&program);
+            bTest2.drawSprite(&program);
+            /*
+            for(int i = 0; i < p1Bullets.size(); i++) {
+                p1Bullets[i].drawSprite(&program);
+                p2Bullets[i].drawSprite(&program);
+            }
+             */
+            
         }
         
         if(state==STATE_GAME_LEVEL_2) {
@@ -490,6 +558,9 @@ int main(int argc, char *argv[])
             player.drawSprite(&program);
             player2.drawSprite(&program);
         }
+        
+        if(p1Shot) {p1Shot = !p1Shot;}
+        if(p2Shot) {p2Shot = !p2Shot;}
         pastState = state;
         
         SDL_GL_SwapWindow(displayWindow);
