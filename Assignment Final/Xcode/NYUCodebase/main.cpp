@@ -291,27 +291,35 @@ int main(int argc, char *argv[])
                     state = STATE_MAIN_MENU;
                     paused = false;
                 }
-                if(event.key.keysym.scancode == SDL_SCANCODE_W && player.collidedBottom == true) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_W && player.collidedBottom == true && state == STATE_GAME_LEVEL_1) {
                     p1jmpAmt = 0;
                     player.yVelocity = 6;
                     p1jmpAmt++;
                     //printf("jumped: %i", jmpAmt);
                 }
-                else if(event.key.keysym.scancode == SDL_SCANCODE_W && p1jmpAmt == 1) {
+                else if(event.key.keysym.scancode == SDL_SCANCODE_W && p1jmpAmt == 1 && state == STATE_GAME_LEVEL_1) {
                     player.yVelocity = 12;
                     p1jmpAmt = 0;
                     //printf("jumping: %i", jmpAmt);
                 }
-                if(event.key.keysym.scancode == SDL_SCANCODE_I && player.collidedBottom == true) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_I && player2.collidedBottom == true && state == STATE_GAME_LEVEL_1) {
                     p2jmpAmt = 0;
                     player2.yVelocity = 6;
                     p2jmpAmt++;
                     //printf("jumped: %i", jmpAmt);
                 }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
-                else if(event.key.keysym.scancode == SDL_SCANCODE_I && p2jmpAmt == 1) {
+                else if(event.key.keysym.scancode == SDL_SCANCODE_I && p2jmpAmt == 1 && state == STATE_GAME_LEVEL_1) {
                     player2.yVelocity = 12;
                     p2jmpAmt = 0;
                     //printf("jumping: %i", jmpAmt);
+                }
+                if(event.key.keysym.scancode == SDL_SCANCODE_W && state != STATE_GAME_LEVEL_1) {
+                    player.yVelocity = 6;
+                    //printf("jumped: %i", jmpAmt);
+                }
+                if(event.key.keysym.scancode == SDL_SCANCODE_I && state != STATE_GAME_LEVEL_1) {
+                    player2.yVelocity = 6;
+                    //printf("jumped: %i", jmpAmt);
                 }
                 if(event.key.keysym.scancode == SDL_SCANCODE_LSHIFT && bTest.reset == true) {
                     p1Shot = true;
@@ -434,9 +442,10 @@ int main(int argc, char *argv[])
             
             //show score
             float xPos = (player.xTrans+player2.xTrans)/2;
-            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            float yPos = (player.yTrans+player2.yTrans)/2;
+            modelMatrix.Translate(xPos, yPos, player.zTrans);
             p1ScoreTex.DrawText(&program, &modelMatrix);
-            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            modelMatrix.Translate(xPos, yPos, player.zTrans);
             p2ScoreTex.DrawText(&program, &modelMatrix);
             
             //check if we are in paused state
@@ -528,9 +537,10 @@ int main(int argc, char *argv[])
             
             //show score
             float xPos = (player.xTrans+player2.xTrans)/2;
-            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            float yPos = (player.yTrans+player2.yTrans)/2;
+            modelMatrix.Translate(xPos, yPos, player.zTrans);
             p1ScoreTex.DrawText(&program, &modelMatrix);
-            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            modelMatrix.Translate(xPos, yPos, player.zTrans);
             p2ScoreTex.DrawText(&program, &modelMatrix);
             
             //check if we are in paused state
@@ -618,9 +628,10 @@ int main(int argc, char *argv[])
             
             //show score
             float xPos = (player.xTrans+player2.xTrans)/2;
-            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            float yPos = (player.yTrans+player2.yTrans)/2;
+            modelMatrix.Translate(xPos, yPos, player.zTrans);
             p1ScoreTex.DrawText(&program, &modelMatrix);
-            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            modelMatrix.Translate(xPos, yPos, player.zTrans);
             p2ScoreTex.DrawText(&program, &modelMatrix);
             
             //check if we are in paused state
