@@ -130,7 +130,8 @@ int main(int argc, char *argv[])
     ReadTileMap rTM;
     ReadTileMap rTM2;
     ReadTileMap rTM3;
-    int jmpAmt;
+    int p1jmpAmt = 0;
+    int p2jmpAmt = 0;
     Mix_Chunk *someSound;
     
     rTM.readFile(levelFile);
@@ -291,25 +292,25 @@ int main(int argc, char *argv[])
                     paused = false;
                 }
                 if(event.key.keysym.scancode == SDL_SCANCODE_W && player.collidedBottom == true) {
-                    jmpAmt = 0;
+                    p1jmpAmt = 0;
                     player.yVelocity = 6;
-                    jmpAmt++;
+                    p1jmpAmt++;
                     //printf("jumped: %i", jmpAmt);
                 }
-                else if(event.key.keysym.scancode == SDL_SCANCODE_W && jmpAmt == 1) {
+                else if(event.key.keysym.scancode == SDL_SCANCODE_W && p1jmpAmt == 1) {
                     player.yVelocity = 12;
-                    jmpAmt = 0;
+                    p1jmpAmt = 0;
                     //printf("jumping: %i", jmpAmt);
                 }
                 if(event.key.keysym.scancode == SDL_SCANCODE_I && player.collidedBottom == true) {
-                    jmpAmt = 0;
+                    p2jmpAmt = 0;
                     player2.yVelocity = 6;
-                    jmpAmt++;
+                    p2jmpAmt++;
                     //printf("jumped: %i", jmpAmt);
                 }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
-                else if(event.key.keysym.scancode == SDL_SCANCODE_I && jmpAmt == 1) {
+                else if(event.key.keysym.scancode == SDL_SCANCODE_I && p2jmpAmt == 1) {
                     player2.yVelocity = 12;
-                    jmpAmt = 0;
+                    p2jmpAmt = 0;
                     //printf("jumping: %i", jmpAmt);
                 }
                 if(event.key.keysym.scancode == SDL_SCANCODE_LSHIFT && bTest.reset == true) {
@@ -581,6 +582,8 @@ int main(int argc, char *argv[])
             //draw players
             player.drawSprite(&program);
             player2.drawSprite(&program);
+            bTest.drawSprite(&program);
+            bTest2.drawSprite(&program);
         }
         
         if(state==STATE_GAME_LEVEL_3) {
@@ -668,6 +671,8 @@ int main(int argc, char *argv[])
             //draw sprites
             player.drawSprite(&program);
             player2.drawSprite(&program);
+            bTest.drawSprite(&program);
+            bTest2.drawSprite(&program);
         }
         
         if(p1Shot) {p1Shot = !p1Shot;}
