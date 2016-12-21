@@ -31,7 +31,7 @@ Entity::Entity(float wVal, float hVal, float s, bool st, EntityType eType, Sprit
     yScl = 1;
     zScl = 1;
     //active = false;
-    someSound = Mix_LoadWAV("RainDrop.wav");
+    someSound = Mix_LoadWAV("Sound/Landing.wav");
 }
 
 Entity::Entity(const Entity &other) : width(other.width), height(other.height), xTrans(other.xTrans), yTrans(other.yTrans), zTrans(other.zTrans) {
@@ -121,7 +121,7 @@ void Entity::movement(ShaderProgram *program, Entity *other, float elapsed) {
     }
 }
 
-void Entity::movement(ShaderProgram* program, ReadTileMap rTM, Entity *other, float elapsed) {
+void Entity::movement(ShaderProgram* program, ReadTileMap rTM, Entity *other, int &score, float elapsed) {
     if(!isStatic) {
         if(xVelocity < 0) {
             xScl = -1;
@@ -159,10 +159,20 @@ void Entity::movement(ShaderProgram* program, ReadTileMap rTM, Entity *other, fl
         }*/
         
         
+        if(isColliding(other)) {
+            if(collidedBottom) {
+                score++;
+                for(int i = 0; i < rTM.types.size(); i++) {
+                    if(rTM.types[i] == pType) {
+                        setPosition(rTM.xPosList[i]+width, -rTM.yPosList[i], 0);
+                    }
+                }
+            }
+        }
         yVelocity = lerp(yVelocity, 0.0f, elapsed * yFric);
         yVelocity += (yAccle + yGravity) * elapsed;
         yTrans += yVelocity * elapsed;
-        yTrans += yCollisionHandling(other);
+        //yTrans += yCollisionHandling(other);
         ytileCollision(rTM);
         
         

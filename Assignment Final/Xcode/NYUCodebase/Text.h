@@ -24,4 +24,5 @@ public:
     void setPosition(float x, float y, float z);
     void updatePosition(float x, float y, float z);
     void DrawText(ShaderProgram *program, Matrix* modelMatrix);
+    void changeText(std::string nStr);
 };

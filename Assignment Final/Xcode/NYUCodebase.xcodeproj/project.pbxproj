@@ -14,12 +14,10 @@
 		4135B2041DE1265D003E3522 /* myMap.txt in Sources */ = {isa = PBXBuildFile; fileRef = 4135B2021DE107A2003E3522 /* myMap.txt */; };
 		41425CE91E09BDDF00D78433 /* Bullet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41425CE71E09BDDF00D78433 /* Bullet.cpp */; };
 		41425CEB1E09F9D900D78433 /* Rain.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41425CEA1E09F9D900D78433 /* Rain.mp3 */; };
-		41425CED1E09F9DF00D78433 /* RainDrop.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41425CEC1E09F9DF00D78433 /* RainDrop.wav */; };
 		41425CEF1E09FBB400D78433 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41425CEE1E09FBB400D78433 /* SDL2_mixer.framework */; };
-		41425CF11E09FFB900D78433 /* Music.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41425CF01E09FFB900D78433 /* Music.wav */; };
-		41425CF31E09FFBC00D78433 /* Music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41425CF21E09FFBC00D78433 /* Music.mp3 */; };
 		41425CF51E0A223300D78433 /* PlatformMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41425CF41E0A223200D78433 /* PlatformMusic.mp3 */; };
 		41425CF71E0A241700D78433 /* Procedural.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41425CF61E0A241700D78433 /* Procedural.mp3 */; };
+		41425CFB1E0AA54600D78433 /* Sound in Resources */ = {isa = PBXBuildFile; fileRef = 41425CFA1E0AA54600D78433 /* Sound */; };
 		41622BD61DFF444C0029C8AC /* Stage1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41622BD51DFF444C0029C8AC /* Stage1.txt */; };
 		41622BD81DFF44570029C8AC /* Stage2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41622BD71DFF44570029C8AC /* Stage2.txt */; };
 		41622BDA1DFF445E0029C8AC /* Stage3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 41622BD91DFF445E0029C8AC /* Stage3.txt */; };
@@ -56,12 +54,10 @@
 		41425CE71E09BDDF00D78433 /* Bullet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bullet.cpp; sourceTree = "<group>"; };
 		41425CE81E09BDDF00D78433 /* Bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bullet.h; sourceTree = "<group>"; };
 		41425CEA1E09F9D900D78433 /* Rain.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Rain.mp3; sourceTree = "<group>"; };
-		41425CEC1E09F9DF00D78433 /* RainDrop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = RainDrop.wav; sourceTree = "<group>"; };
 		41425CEE1E09FBB400D78433 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_mixer.framework; sourceTree = "<group>"; };
-		41425CF01E09FFB900D78433 /* Music.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Music.wav; sourceTree = "<group>"; };
-		41425CF21E09FFBC00D78433 /* Music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Music.mp3; sourceTree = "<group>"; };
 		41425CF41E0A223200D78433 /* PlatformMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = PlatformMusic.mp3; sourceTree = "<group>"; };
 		41425CF61E0A241700D78433 /* Procedural.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Procedural.mp3; sourceTree = "<group>"; };
+		41425CFA1E0AA54600D78433 /* Sound */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sound; sourceTree = "<group>"; };
 		41622BD51DFF444C0029C8AC /* Stage1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Stage1.txt; sourceTree = "<group>"; };
 		41622BD71DFF44570029C8AC /* Stage2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Stage2.txt; sourceTree = "<group>"; };
 		41622BD91DFF445E0029C8AC /* Stage3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Stage3.txt; sourceTree = "<group>"; };
@@ -212,11 +208,9 @@
 				6D5A86B919AE5C710066C1FD /* main.cpp */,
 				41425CF61E0A241700D78433 /* Procedural.mp3 */,
 				41425CF41E0A223200D78433 /* PlatformMusic.mp3 */,
+				41425CFA1E0AA54600D78433 /* Sound */,
 				6DEF23BC1B96CC2600BCE792 /* Matrix.cpp */,
 				41425CEA1E09F9D900D78433 /* Rain.mp3 */,
-				41425CEC1E09F9DF00D78433 /* RainDrop.wav */,
-				41425CF21E09FFBC00D78433 /* Music.mp3 */,
-				41425CF01E09FFB900D78433 /* Music.wav */,
 				6DEF23BD1B96CC2600BCE792 /* Matrix.h */,
 				6DEF23BE1B96CC2600BCE792 /* ShaderProgram.cpp */,
 				6DEF23BF1B96CC2600BCE792 /* ShaderProgram.h */,
@@ -288,7 +282,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41425CF11E09FFB900D78433 /* Music.wav in Resources */,
+				41425CFB1E0AA54600D78433 /* Sound in Resources */,
 				41425CF51E0A223300D78433 /* PlatformMusic.mp3 in Resources */,
 				41425CEB1E09F9D900D78433 /* Rain.mp3 in Resources */,
 				419EE8781DB447A300F2E40E /* font1.png in Resources */,
@@ -300,11 +294,9 @@
 				41622BD81DFF44570029C8AC /* Stage2.txt in Resources */,
 				41622BD61DFF444C0029C8AC /* Stage1.txt in Resources */,
 				41622BDA1DFF445E0029C8AC /* Stage3.txt in Resources */,
-				41425CF31E09FFBC00D78433 /* Music.mp3 in Resources */,
 				6DE9D2F11BA6AB8C002D599C /* fragment_textured.glsl in Resources */,
 				419EE8761DB317CD00F2E40E /* characters_3.png in Resources */,
 				6D5A86C619AE5C710066C1FD /* Images.xcassets in Resources */,
-				41425CED1E09F9DF00D78433 /* RainDrop.wav in Resources */,
 				41425CF71E0A241700D78433 /* Procedural.mp3 in Resources */,
 				6D5A86BE19AE5C710066C1FD /* Credits.rtf in Resources */,
 				6DEF23C41B96CC2600BCE792 /* vertex.glsl in Resources */,

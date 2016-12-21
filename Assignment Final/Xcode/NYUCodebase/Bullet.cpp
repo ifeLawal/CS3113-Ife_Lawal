@@ -56,12 +56,15 @@ void Bullet::checkReset() {
     }
 }
 
-void Bullet::movement(ShaderProgram *program, ReadTileMap rTM, Entity *other, float elapsed) {
+void Bullet::movement(ShaderProgram *program, ReadTileMap rTM, Entity *other, int &score, float elapsed) {
     checkReset();
     if(xtileCollision(rTM)) {
         setPosition(0, 0, 0);
         xVelocity = 0;
     } if(isColliding(other)) {
+        score++;
+        setPosition(0, 0, 0);
+        xVelocity = 0;
         for(int i = 0; i < rTM.types.size(); i++) {
             if(rTM.types[i] == other->pType) {
                 other->setPosition(rTM.xPosList[i]+width, -rTM.yPosList[i], 0);

@@ -20,7 +20,7 @@ public:
     
     void movement(ShaderProgram *program, Entity *other, float elapsed);
     
-    void movement(ShaderProgram *program, ReadTileMap rTM, Entity *other, float elapsed);
+    void movement(ShaderProgram *program, ReadTileMap rTM, Entity *other, int &score, float elapsed);
     
     bool xtileCollision(ReadTileMap rTM);
 

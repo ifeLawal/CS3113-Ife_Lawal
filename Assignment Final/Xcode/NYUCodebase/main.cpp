@@ -170,9 +170,9 @@ int main(int argc, char *argv[])
     music = Mix_LoadMUS("PlatformMusic.mp3");
     Mix_PlayMusic(music, -1);
     Mix_Chunk *bullet1Sound;
-    bullet1Sound = Mix_LoadWAV("RainDrop.wav");
+    bullet1Sound = Mix_LoadWAV("Sound/bullet1Sound.wav");
     Mix_Chunk *bullet2Sound;
-    bullet2Sound = Mix_LoadWAV("RainDrop.wav");
+    bullet2Sound = Mix_LoadWAV("Sound/bullet3Sound.wav");
     
     state = 0;
     pastState = state;
@@ -185,6 +185,8 @@ int main(int argc, char *argv[])
     
 
     float lastFrameTicks = 0.0f;
+    int p1Score = 0;
+    int p2Score = 0;
     
     program.setModelMatrix(modelMatrix);
     program.setViewMatrix(viewMatrix);
@@ -254,6 +256,8 @@ int main(int argc, char *argv[])
     Text stage2("Stage 2", fontTexture, 1.3, -.01);
     Text stage3("Stage 3", fontTexture, 1.3, -.01);
     Text quitTest("Press Q to Quit Game", fontTexture, 1, -.001);
+    Text p1ScoreTex("0", fontTexture, 1, -.001);
+    Text p2ScoreTex("0", fontTexture, 1, -.001);
     //Text test4("-", fontTexture, 1, -.01);
     
     test.updatePosition(0, 4, 0);
@@ -261,6 +265,8 @@ int main(int argc, char *argv[])
     stage2.updatePosition(0, 1, 0);
     stage3.updatePosition(0, 0, 0);
     quitTest.updatePosition(0, 1, 0);
+    p1ScoreTex.updatePosition(-1, 5, 0);
+    p2ScoreTex.updatePosition(1, 5, 0);
     
     SDL_Event event;
     bool done = false;
@@ -270,6 +276,11 @@ int main(int argc, char *argv[])
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
                 Mix_FreeMusic(music);
                 Mix_FreeMusic(gameMusic);
+                Mix_FreeChunk(player.someSound);
+                Mix_FreeChunk(player2.someSound);
+                Mix_FreeChunk(bullet1Sound);
+                Mix_FreeChunk(bullet2Sound);
+                
                 done = true;
             } if(event.type == SDL_KEYDOWN) {
                 if(event.key.keysym.scancode == SDL_SCANCODE_ESCAPE && state > 0) {
@@ -370,6 +381,9 @@ int main(int argc, char *argv[])
         //printf("%i", state);
         
         if(state==STATE_MAIN_MENU) {
+            if(pastState != state) {
+                Mix_PlayMusic(music, -1);;
+            }
             float xPos = (player.xTrans+player2.xTrans)/2;
             modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
             test.DrawText(&program, &modelMatrix);
@@ -385,6 +399,8 @@ int main(int argc, char *argv[])
             //check for change in states which symbolizes the very beginning of the stage entry
             //and check if game is paused
             if(pastState != state && !paused) {
+                p1Score = 0;
+                p2Score = 0;
                 //rTM.readFile(levelFile);
                 Mix_PlayMusic(gameMusic, -1);
                 for(int i = 0; i < rTM.types.size(); i++) {
@@ -400,7 +416,7 @@ int main(int argc, char *argv[])
             
             //make view matrix between the two characters
             viewMatrix.identity();
-            viewMatrix.Translate(-((player.xTrans+player2.xTrans)/2), -player.yTrans, 1);
+            viewMatrix.Translate(-((player.xTrans+player2.xTrans)/2), -((player.yTrans+player2.yTrans)/2), 1);
             //viewMatrix.Scale(0.5, 0.5, 1);
             program.setViewMatrix(viewMatrix);
 
@@ -410,6 +426,17 @@ int main(int argc, char *argv[])
             
             //render stage 2 map by sending map texture and program data
             rTM.renderMap(&program, spriteTexture);
+            
+            //update score
+            p1ScoreTex.changeText(std::to_string(p1Score));
+            p2ScoreTex.changeText(std::to_string(p2Score));
+            
+            //show score
+            float xPos = (player.xTrans+player2.xTrans)/2;
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            p1ScoreTex.DrawText(&program, &modelMatrix);
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            p2ScoreTex.DrawText(&program, &modelMatrix);
             
             //check if we are in paused state
             if(paused) {
@@ -436,11 +463,11 @@ int main(int argc, char *argv[])
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
                     //player.drawSprite(&program);
-                    player.movement(&program, rTM, &player2, FIXED_TIMESTEP);
-                    player2.movement(&program, rTM, &player, FIXED_TIMESTEP);
-                   
-                    bTest.movement(&program, rTM, &player2, FIXED_TIMESTEP);
-                    bTest2.movement(&program, rTM, &player, FIXED_TIMESTEP);
+                    player.movement(&program, rTM, &player2, p1Score, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM, &player, p2Score, FIXED_TIMESTEP);
+                    
+                    bTest.movement(&program, rTM, &player2, p1Score, FIXED_TIMESTEP);
+                    bTest2.movement(&program, rTM, &player, p2Score, FIXED_TIMESTEP);
                 }
                 /*
                 for(int i = 0; i < p1Bullets.size(); i++) {
@@ -449,10 +476,10 @@ int main(int argc, char *argv[])
                     
                 }
                  */
-                bTest.movement(&program, &enemy, fixedElapsed);
-                bTest2.movement(&program, &enemy, fixedElapsed);
-                player.movement(&program, rTM, &enemy, fixedElapsed);
-                player2.movement(&program, rTM, &enemy, fixedElapsed);
+                bTest.movement(&program, rTM, &player2, p1Score, fixedElapsed);
+                bTest2.movement(&program, rTM, &player, p2Score, fixedElapsed);
+                player.movement(&program, rTM, &player2, p1Score, fixedElapsed);
+                player2.movement(&program, rTM, &player, p2Score, fixedElapsed);
             }
             
             //draw players
@@ -472,6 +499,8 @@ int main(int argc, char *argv[])
         if(state==STATE_GAME_LEVEL_2) {
             
             if(pastState != state && !paused) {
+                p1Score = 0;
+                p2Score = 0;
                 Mix_PlayMusic(gameMusic, -1);
                 for(int i = 0; i < rTM2.types.size(); i++) {
                     if(rTM2.types[i] == "Player1") {
@@ -492,6 +521,17 @@ int main(int argc, char *argv[])
             //render stage 2 map by sending map texture and program data
             rTM2.renderMap(&program, spriteTexture);
 
+            //update score
+            p1ScoreTex.changeText(std::to_string(p1Score));
+            p2ScoreTex.changeText(std::to_string(p2Score));
+            
+            //show score
+            float xPos = (player.xTrans+player2.xTrans)/2;
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            p1ScoreTex.DrawText(&program, &modelMatrix);
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            p2ScoreTex.DrawText(&program, &modelMatrix);
+            
             //check if we are in paused state
             if(paused) {
                 //if paused show quit overlay text
@@ -516,17 +556,24 @@ int main(int argc, char *argv[])
                 }
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
-
-                    player.movement(&program, rTM2, &enemy, FIXED_TIMESTEP);
-                    player2.movement(&program, rTM2, &enemy, FIXED_TIMESTEP);
-                    bTest.movement(&program, rTM, &player2, FIXED_TIMESTEP);
-                    bTest2.movement(&program, rTM, &player, FIXED_TIMESTEP);
+                    //player.drawSprite(&program);
+                    player.movement(&program, rTM2, &player2, p1Score, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM2, &player, p2Score, FIXED_TIMESTEP);
+                    
+                    bTest.movement(&program, rTM2, &player2, p1Score, FIXED_TIMESTEP);
+                    bTest2.movement(&program, rTM2, &player, p2Score, FIXED_TIMESTEP);
                 }
-                
-                bTest.movement(&program, &enemy, fixedElapsed);
-                bTest2.movement(&program, &enemy, fixedElapsed);
-                player.movement(&program, rTM2, &enemy, fixedElapsed);
-                player2.movement(&program, rTM2, &enemy, fixedElapsed);
+                /*
+                 for(int i = 0; i < p1Bullets.size(); i++) {
+                 p1Bullets[i].movement(&program, &enemy, fixedElapsed);
+                 p2Bullets[i].movement(&program, &enemy, fixedElapsed);
+                 
+                 }
+                 */
+                bTest.movement(&program, rTM2, &player2, p1Score, fixedElapsed);
+                bTest2.movement(&program, rTM2, &player, p2Score, fixedElapsed);
+                player.movement(&program, rTM2, &player2, p1Score, fixedElapsed);
+                player2.movement(&program, rTM2, &player, p2Score, fixedElapsed);
             
             }
             
@@ -539,6 +586,8 @@ int main(int argc, char *argv[])
         if(state==STATE_GAME_LEVEL_3) {
             
             if(pastState != state && !paused) {
+                p1Score = 0;
+                p2Score = 0;
                 Mix_PlayMusic(gameMusic, -1);
                 
                 for(int i = 0; i < rTM3.types.size(); i++) {
@@ -560,6 +609,17 @@ int main(int argc, char *argv[])
             
             rTM3.renderMap(&program, spriteTexture);
             
+            //update score
+            p1ScoreTex.changeText(std::to_string(p1Score));
+            p2ScoreTex.changeText(std::to_string(p2Score));
+            
+            //show score
+            float xPos = (player.xTrans+player2.xTrans)/2;
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            p1ScoreTex.DrawText(&program, &modelMatrix);
+            modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
+            p2ScoreTex.DrawText(&program, &modelMatrix);
+            
             //check if we are in paused state
             if(paused) {
                 //if paused show quit overlay text
@@ -585,18 +645,24 @@ int main(int argc, char *argv[])
                 }
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
+                    //player.drawSprite(&program);
+                    player.movement(&program, rTM3, &player2, p1Score, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM3, &player, p2Score, FIXED_TIMESTEP);
                     
-                    player.movement(&program, rTM3, &enemy, FIXED_TIMESTEP);
-                    player2.movement(&program, rTM3, &enemy, FIXED_TIMESTEP);
-                    bTest.movement(&program, rTM, &player2, FIXED_TIMESTEP);
-                    bTest2.movement(&program, rTM, &player, FIXED_TIMESTEP);
+                    bTest.movement(&program, rTM3, &player2, p1Score, FIXED_TIMESTEP);
+                    bTest2.movement(&program, rTM3, &player, p2Score, FIXED_TIMESTEP);
                 }
-                
-                bTest.movement(&program, &enemy, fixedElapsed);
-                bTest2.movement(&program, &enemy, fixedElapsed);
-                player.movement(&program, rTM3, &enemy, fixedElapsed);
-                player2.movement(&program, rTM3, &enemy, fixedElapsed);
-
+                /*
+                 for(int i = 0; i < p1Bullets.size(); i++) {
+                 p1Bullets[i].movement(&program, &enemy, fixedElapsed);
+                 p2Bullets[i].movement(&program, &enemy, fixedElapsed);
+                 
+                 }
+                 */
+                bTest.movement(&program, rTM3, &player2, p1Score, fixedElapsed);
+                bTest2.movement(&program, rTM3, &player, p2Score, fixedElapsed);
+                player.movement(&program, rTM3, &player2, p1Score, fixedElapsed);
+                player2.movement(&program, rTM3, &player, p2Score, fixedElapsed);
             }
             
             //draw sprites

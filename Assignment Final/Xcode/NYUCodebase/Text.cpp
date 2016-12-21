@@ -48,6 +48,11 @@ void Text::updatePosition(float x, float y, float z) {
     zTrans += z;
     //modelMatrix.Translate(xTrans, yTrans, zTrans);
 }
+
+void Text::changeText(std::string nStr) {
+    text = nStr;
+}
+
 void Text::DrawText(ShaderProgram *program, Matrix* modelMat) {
     //program->setModelMatrix(*modelMat);
 
