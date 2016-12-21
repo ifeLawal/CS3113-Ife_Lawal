@@ -11,7 +11,7 @@
 #include "CompositeEntity.h"
 #include "ReadTileMap.h"
 #include "Bullet.h"
-
+#include <SDL2_mixer/SDL_mixer.h>
 
 #ifdef _WINDOWS
 #define RESOURCE_FOLDER ""
@@ -131,6 +131,7 @@ int main(int argc, char *argv[])
     ReadTileMap rTM2;
     ReadTileMap rTM3;
     int jmpAmt;
+    Mix_Chunk *someSound;
     
     rTM.readFile(levelFile);
     rTM2.readFile(levelFile2);
@@ -161,6 +162,17 @@ int main(int argc, char *argv[])
     */
     
     ShaderProgram program (RESOURCE_FOLDER"vertex_textured.glsl", RESOURCE_FOLDER"fragment_textured.glsl");
+    
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+    Mix_Music *music;
+    Mix_Music *gameMusic;
+    gameMusic = Mix_LoadMUS("Procedural.mp3");
+    music = Mix_LoadMUS("PlatformMusic.mp3");
+    Mix_PlayMusic(music, -1);
+    Mix_Chunk *bullet1Sound;
+    bullet1Sound = Mix_LoadWAV("RainDrop.wav");
+    Mix_Chunk *bullet2Sound;
+    bullet2Sound = Mix_LoadWAV("RainDrop.wav");
     
     state = 0;
     pastState = state;
@@ -200,13 +212,15 @@ int main(int argc, char *argv[])
     Entity player2(h, h, 1, false, ENTITY_PLAYER, &playerSheet2);
     Bullet bTest(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
     Bullet bTest2(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
+    Bullet bTest3(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
+    Bullet bTest4(h, h, .6, false, ENTITY_ENEMY, &bTestSheet);
     
     bool p1Shot = false;
     bool p2Shot = false;
     int p1Index = 0;
     int p2Index = 0;
     int index = 0;
-    int maxBullets = 8;
+    int maxBullets = 2;
     /*
     std::vector<Bullet> p1Bullets;
     std::vector<Bullet> p2Bullets;
@@ -254,6 +268,8 @@ int main(int argc, char *argv[])
         const Uint8 *keys = SDL_GetKeyboardState(NULL);
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT || event.type == SDL_WINDOWEVENT_CLOSE) {
+                Mix_FreeMusic(music);
+                Mix_FreeMusic(gameMusic);
                 done = true;
             } if(event.type == SDL_KEYDOWN) {
                 if(event.key.keysym.scancode == SDL_SCANCODE_ESCAPE && state > 0) {
@@ -267,25 +283,25 @@ int main(int argc, char *argv[])
                     jmpAmt = 0;
                     player.yVelocity = 6;
                     jmpAmt++;
-                    printf("jumped: %i", jmpAmt);
+                    //printf("jumped: %i", jmpAmt);
                 }
                 else if(event.key.keysym.scancode == SDL_SCANCODE_W && jmpAmt == 1) {
                     player.yVelocity = 12;
                     jmpAmt = 0;
-                    printf("jumping: %i", jmpAmt);
+                    //printf("jumping: %i", jmpAmt);
                 }
                 if(event.key.keysym.scancode == SDL_SCANCODE_I && player.collidedBottom == true) {
                     jmpAmt = 0;
                     player2.yVelocity = 6;
                     jmpAmt++;
-                    printf("jumped: %i", jmpAmt);
+                    //printf("jumped: %i", jmpAmt);
                 }//event.key.keysym.scancode == SDL_SCANCODE_SPACE
                 else if(event.key.keysym.scancode == SDL_SCANCODE_I && jmpAmt == 1) {
                     player2.yVelocity = 12;
                     jmpAmt = 0;
-                    printf("jumping: %i", jmpAmt);
+                    //printf("jumping: %i", jmpAmt);
                 }
-                if(event.key.keysym.scancode == SDL_SCANCODE_LSHIFT) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_LSHIFT && bTest.reset == true) {
                     p1Shot = true;
                     p1Index++;
                     p1Index = p1Index % maxBullets;
@@ -295,7 +311,7 @@ int main(int argc, char *argv[])
                        bTest.xVelocity = -15;
                     }
                 }
-                if(event.key.keysym.scancode == SDL_SCANCODE_RSHIFT) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_RSHIFT && bTest2.reset == true) {
                     p2Shot = true;
                     p2Index++;
                     p2Index = p2Index % maxBullets;
@@ -370,6 +386,7 @@ int main(int argc, char *argv[])
             //and check if game is paused
             if(pastState != state && !paused) {
                 //rTM.readFile(levelFile);
+                Mix_PlayMusic(gameMusic, -1);
                 for(int i = 0; i < rTM.types.size(); i++) {
                     if(rTM.types[i] == "Player1") {
                         player.setPosition(rTM.xPosList[i]+player.width, -rTM.yPosList[i], 0);
@@ -405,9 +422,11 @@ int main(int argc, char *argv[])
             //if not paused do movements and collisions
             else {
                 if(p1Shot) {
+                    Mix_PlayChannel(-1, bullet1Sound, 0);
                     bTest.setPosition(player.xTrans, player.yTrans, player.zTrans);
                 }
                 if(p2Shot) {
+                    Mix_PlayChannel(-1, bullet2Sound, 0);
                     bTest2.setPosition(player2.xTrans, player2.yTrans, player2.zTrans);
                 }
                 float fixedElapsed = elapsed;
@@ -417,11 +436,11 @@ int main(int argc, char *argv[])
                 while (fixedElapsed >= FIXED_TIMESTEP) {
                     fixedElapsed -= FIXED_TIMESTEP;
                     //player.drawSprite(&program);
-                    player.movement(&program, rTM, &enemy, FIXED_TIMESTEP);
-                    player2.movement(&program, rTM, &enemy, FIXED_TIMESTEP);
+                    player.movement(&program, rTM, &player2, FIXED_TIMESTEP);
+                    player2.movement(&program, rTM, &player, FIXED_TIMESTEP);
                    
-                    bTest.movement(&program, &enemy, FIXED_TIMESTEP);
-                    bTest2.movement(&program, &enemy, FIXED_TIMESTEP);
+                    bTest.movement(&program, rTM, &player2, FIXED_TIMESTEP);
+                    bTest2.movement(&program, rTM, &player, FIXED_TIMESTEP);
                 }
                 /*
                 for(int i = 0; i < p1Bullets.size(); i++) {
@@ -453,7 +472,7 @@ int main(int argc, char *argv[])
         if(state==STATE_GAME_LEVEL_2) {
             
             if(pastState != state && !paused) {
-                
+                Mix_PlayMusic(gameMusic, -1);
                 for(int i = 0; i < rTM2.types.size(); i++) {
                     if(rTM2.types[i] == "Player1") {
                         player.setPosition(rTM2.xPosList[i]+player.width, -rTM2.yPosList[i], 0);
@@ -483,6 +502,14 @@ int main(int argc, char *argv[])
             }
             //if not paused do movements and collisions
             else {
+                if(p1Shot) {
+                    Mix_PlayChannel(-1, bullet1Sound, 0);
+                    bTest.setPosition(player.xTrans, player.yTrans, player.zTrans);
+                }
+                if(p2Shot) {
+                    Mix_PlayChannel(-1, bullet2Sound, 0);
+                    bTest2.setPosition(player2.xTrans, player2.yTrans, player2.zTrans);
+                }
                 float fixedElapsed = elapsed;
                 if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
                     fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -492,7 +519,12 @@ int main(int argc, char *argv[])
 
                     player.movement(&program, rTM2, &enemy, FIXED_TIMESTEP);
                     player2.movement(&program, rTM2, &enemy, FIXED_TIMESTEP);
+                    bTest.movement(&program, rTM, &player2, FIXED_TIMESTEP);
+                    bTest2.movement(&program, rTM, &player, FIXED_TIMESTEP);
                 }
+                
+                bTest.movement(&program, &enemy, fixedElapsed);
+                bTest2.movement(&program, &enemy, fixedElapsed);
                 player.movement(&program, rTM2, &enemy, fixedElapsed);
                 player2.movement(&program, rTM2, &enemy, fixedElapsed);
             
@@ -507,7 +539,7 @@ int main(int argc, char *argv[])
         if(state==STATE_GAME_LEVEL_3) {
             
             if(pastState != state && !paused) {
-                
+                Mix_PlayMusic(gameMusic, -1);
                 
                 for(int i = 0; i < rTM3.types.size(); i++) {
                     if(rTM3.types[i] == "Player1") {
@@ -538,6 +570,15 @@ int main(int argc, char *argv[])
             }
             //if not paused do movements and collisions
             else {
+                if(p1Shot) {
+                    Mix_PlayChannel(-1, bullet1Sound, 0);
+                    bTest.setPosition(player.xTrans, player.yTrans, player.zTrans);
+                }
+                if(p2Shot) {
+                    Mix_PlayChannel(-1, bullet2Sound, 0);
+                    bTest2.setPosition(player2.xTrans, player2.yTrans, player2.zTrans);
+                }
+
                 float fixedElapsed = elapsed;
                 if(fixedElapsed > FIXED_TIMESTEP * MAX_TIMESTEPS) {
                     fixedElapsed = FIXED_TIMESTEP * MAX_TIMESTEPS;
@@ -547,8 +588,12 @@ int main(int argc, char *argv[])
                     
                     player.movement(&program, rTM3, &enemy, FIXED_TIMESTEP);
                     player2.movement(&program, rTM3, &enemy, FIXED_TIMESTEP);
-                    
+                    bTest.movement(&program, rTM, &player2, FIXED_TIMESTEP);
+                    bTest2.movement(&program, rTM, &player, FIXED_TIMESTEP);
                 }
+                
+                bTest.movement(&program, &enemy, fixedElapsed);
+                bTest2.movement(&program, &enemy, fixedElapsed);
                 player.movement(&program, rTM3, &enemy, fixedElapsed);
                 player2.movement(&program, rTM3, &enemy, fixedElapsed);
 

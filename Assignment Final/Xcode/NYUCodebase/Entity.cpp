@@ -31,6 +31,7 @@ Entity::Entity(float wVal, float hVal, float s, bool st, EntityType eType, Sprit
     yScl = 1;
     zScl = 1;
     //active = false;
+    someSound = Mix_LoadWAV("RainDrop.wav");
 }
 
 Entity::Entity(const Entity &other) : width(other.width), height(other.height), xTrans(other.xTrans), yTrans(other.yTrans), zTrans(other.zTrans) {
@@ -166,7 +167,7 @@ void Entity::movement(ShaderProgram* program, ReadTileMap rTM, Entity *other, fl
         
         
         
-        if(landed) {printf("landed");}
+        if(landed) {Mix_PlayChannel(-1, someSound, 0);}
         
         xVelocity = lerp(xVelocity, 0.0f, elapsed * xFric);
         xVelocity += xAccle * elapsed;

@@ -14,12 +14,17 @@
 
 class Bullet: public Entity {
 public:
+    bool reset;
+    
     Bullet(float wVal, float hVal, float s, bool st, EntityType eType, SpriteSheet *sheet);
     
     void movement(ShaderProgram *program, Entity *other, float elapsed);
     
-    void xtileCollision(ReadTileMap rTM);
+    void movement(ShaderProgram *program, ReadTileMap rTM, Entity *other, float elapsed);
     
+    bool xtileCollision(ReadTileMap rTM);
+
+    void checkReset();
     
 };
 

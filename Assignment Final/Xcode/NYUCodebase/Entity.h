@@ -14,6 +14,7 @@
 #include "Matrix.h"
 #include "ShaderProgram.h"
 #include "SpriteSheet.h"
+#include <SDL2_mixer/SDL_mixer.h>
 
 enum EntityType {ENTITY_BACK, ENTITY_PLAYER, ENTITY_ENEMY, ENTITY_COIN, ENTITY_WALL};
 
@@ -29,6 +30,7 @@ public:
     //int level, xPos;
     Matrix modelMatrix;
     float vertices[12];
+    Mix_Chunk *someSound;
     
     int collisionAmt;
     

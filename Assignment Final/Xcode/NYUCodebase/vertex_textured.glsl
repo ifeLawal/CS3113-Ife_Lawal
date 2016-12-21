@@ -6,6 +6,7 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
 varying vec2 texCoordVar;
+varying vec2 varPosition;
 
 void main()
 {
