@@ -46,6 +46,8 @@ enum GameState {STATE_MAIN_MENU, STATE_GAME_LEVEL_1, STATE_GAME_LEVEL_2, STATE_G
 int state;
 int pastState;
 bool paused;
+bool gameOver;
+bool pastGameState;
 
 GLuint LoadTexture(const char *image_path) {
     SDL_Surface *surface = IMG_Load(image_path);
@@ -259,6 +261,9 @@ int main(int argc, char *argv[])
     Text quitTest("Press Q to Quit Game", fontTexture, 1, -.001);
     Text p1ScoreTex("0", fontTexture, 1, -.001);
     Text p2ScoreTex("0", fontTexture, 1, -.001);
+    Text p1Won("Player1 Won", fontTexture, 1.3, -.01);
+    Text p2Won("Player2 Won", fontTexture, 1.3, -.01);
+    Text retry("Press R to retry", fontTexture, 1.3, -.01);
     //Text test4("-", fontTexture, 1, -.01);
     
     test.updatePosition(0, 4, 0);
@@ -268,6 +273,9 @@ int main(int argc, char *argv[])
     quitTest.updatePosition(0, 1, 0);
     p1ScoreTex.updatePosition(-1, 5, 0);
     p2ScoreTex.updatePosition(1, 5, 0);
+    p1Won.updatePosition(1, 3, 0);
+    p2Won.updatePosition(1, 3, 0);
+    retry.updatePosition(1, 2, 0);
     
     SDL_Event event;
     bool done = false;
@@ -287,9 +295,15 @@ int main(int argc, char *argv[])
                 if(event.key.keysym.scancode == SDL_SCANCODE_ESCAPE && state > 0) {
                         paused = !paused;
                 }
-                if(event.key.keysym.scancode == SDL_SCANCODE_Q && paused) {
+                if(event.key.keysym.scancode == SDL_SCANCODE_Q && (paused || gameOver)) {
                     state = STATE_MAIN_MENU;
                     paused = false;
+                    gameOver = false;
+                }
+                if(event.key.keysym.scancode == SDL_SCANCODE_R && gameOver){
+                    gameOver = false;
+                    p1Score = 0;
+                    p2Score = 0;
                 }
                 if(event.key.keysym.scancode == SDL_SCANCODE_W && player.collidedBottom == true && state == STATE_GAME_LEVEL_1) {
                     p1jmpAmt = 0;
@@ -407,11 +421,15 @@ int main(int argc, char *argv[])
         if(state==STATE_GAME_LEVEL_1) {
             //check for change in states which symbolizes the very beginning of the stage entry
             //and check if game is paused
-            if(pastState != state && !paused) {
+            if((pastState != state || pastGameState != gameOver) && !paused) {
                 p1Score = 0;
                 p2Score = 0;
                 //rTM.readFile(levelFile);
                 Mix_PlayMusic(gameMusic, -1);
+                bTest.setPosition(0, 0, 0);
+                bTest.xVelocity = 0;
+                bTest2.setPosition(0, 0, 0);
+                bTest2.xVelocity = 0;
                 for(int i = 0; i < rTM.types.size(); i++) {
                     if(rTM.types[i] == "Player1") {
                         player.setPosition(rTM.xPosList[i]+player.width, -rTM.yPosList[i], 0);
@@ -436,25 +454,41 @@ int main(int argc, char *argv[])
             //render stage 2 map by sending map texture and program data
             rTM.renderMap(&program, spriteTexture);
             
+            
+            float xPos = (player.xTrans+player2.xTrans)/2;
+            float yPos = (player.yTrans+player2.yTrans)/2;
+
             //update score
             p1ScoreTex.changeText(std::to_string(p1Score));
             p2ScoreTex.changeText(std::to_string(p2Score));
             
             //show score
-            float xPos = (player.xTrans+player2.xTrans)/2;
-            float yPos = (player.yTrans+player2.yTrans)/2;
+           
             modelMatrix.Translate(xPos, yPos, player.zTrans);
             p1ScoreTex.DrawText(&program, &modelMatrix);
             modelMatrix.Translate(xPos, yPos, player.zTrans);
             p2ScoreTex.DrawText(&program, &modelMatrix);
-            
+            if(p1Score >= 5) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                p1Won.DrawText(&program, &modelMatrix);
+                gameOver = true;
+            }
+            if(p2Score >= 5) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                p2Won.DrawText(&program, &modelMatrix);
+                gameOver = true;
+            }
             //check if we are in paused state
             if(paused) {
                 //if paused show quit overlay text
-                float xPos = (player.xTrans+player2.xTrans)/2;
                 modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
                 quitTest.DrawText(&program, &modelMatrix);
 
+            } else if (gameOver) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                retry.DrawText(&program, &modelMatrix);
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                quitTest.DrawText(&program, &modelMatrix);
             }
             //if not paused do movements and collisions
             else {
@@ -508,11 +542,16 @@ int main(int argc, char *argv[])
         
         if(state==STATE_GAME_LEVEL_2) {
             
-            if(pastState != state && !paused) {
+            if((pastState != state || pastGameState != gameOver) && !paused) {
                 p1Score = 0;
                 p2Score = 0;
                 Mix_PlayMusic(gameMusic, -1);
+                bTest.setPosition(0, 0, 0);
+                bTest.xVelocity = 0;
+                bTest2.setPosition(0, 0, 0);
+                bTest2.xVelocity = 0;
                 for(int i = 0; i < rTM2.types.size(); i++) {
+                    
                     if(rTM2.types[i] == "Player1") {
                         player.setPosition(rTM2.xPosList[i]+player.width, -rTM2.yPosList[i], 0);
                     }
@@ -535,21 +574,41 @@ int main(int argc, char *argv[])
             p1ScoreTex.changeText(std::to_string(p1Score));
             p2ScoreTex.changeText(std::to_string(p2Score));
             
-            //show score
+            //midOf Player1 and player2
             float xPos = (player.xTrans+player2.xTrans)/2;
             float yPos = (player.yTrans+player2.yTrans)/2;
+            
+            //update score
+            p1ScoreTex.changeText(std::to_string(p1Score));
+            p2ScoreTex.changeText(std::to_string(p2Score));
+            
+            //show score
+            
             modelMatrix.Translate(xPos, yPos, player.zTrans);
             p1ScoreTex.DrawText(&program, &modelMatrix);
             modelMatrix.Translate(xPos, yPos, player.zTrans);
             p2ScoreTex.DrawText(&program, &modelMatrix);
-            
+            if(p1Score >= 5) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                p1Won.DrawText(&program, &modelMatrix);
+                gameOver = true;
+            }
+            if(p2Score >= 5) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                p2Won.DrawText(&program, &modelMatrix);
+                gameOver = true;
+            }
             //check if we are in paused state
             if(paused) {
                 //if paused show quit overlay text
-                float xPos = (player.xTrans+player2.xTrans)/2;
                 modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
                 quitTest.DrawText(&program, &modelMatrix);
                 
+            } else if (gameOver) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                retry.DrawText(&program, &modelMatrix);
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                quitTest.DrawText(&program, &modelMatrix);
             }
             //if not paused do movements and collisions
             else {
@@ -598,11 +657,14 @@ int main(int argc, char *argv[])
         
         if(state==STATE_GAME_LEVEL_3) {
             
-            if(pastState != state && !paused) {
+            if((pastState != state || pastGameState != gameOver) && !paused) {
                 p1Score = 0;
                 p2Score = 0;
                 Mix_PlayMusic(gameMusic, -1);
-                
+                bTest.setPosition(0, 0, 0);
+                bTest.xVelocity = 0;
+                bTest2.setPosition(0, 0, 0);
+                bTest2.xVelocity = 0;
                 for(int i = 0; i < rTM3.types.size(); i++) {
                     if(rTM3.types[i] == "Player1") {
                         player.setPosition(rTM3.xPosList[i]+player.width, -rTM3.yPosList[i], 0);
@@ -626,21 +688,41 @@ int main(int argc, char *argv[])
             p1ScoreTex.changeText(std::to_string(p1Score));
             p2ScoreTex.changeText(std::to_string(p2Score));
             
-            //show score
+            //midOf Player1 and player2
             float xPos = (player.xTrans+player2.xTrans)/2;
             float yPos = (player.yTrans+player2.yTrans)/2;
+            
+            //update score
+            p1ScoreTex.changeText(std::to_string(p1Score));
+            p2ScoreTex.changeText(std::to_string(p2Score));
+            
+            //show score
+            
             modelMatrix.Translate(xPos, yPos, player.zTrans);
             p1ScoreTex.DrawText(&program, &modelMatrix);
             modelMatrix.Translate(xPos, yPos, player.zTrans);
             p2ScoreTex.DrawText(&program, &modelMatrix);
-            
+            if(p1Score >= 5) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                p1Won.DrawText(&program, &modelMatrix);
+                gameOver = true;
+            }
+            if(p2Score >= 5) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                p2Won.DrawText(&program, &modelMatrix);
+                gameOver = true;
+            }
             //check if we are in paused state
             if(paused) {
                 //if paused show quit overlay text
-                float xPos = (player.xTrans+player2.xTrans)/2;
                 modelMatrix.Translate(xPos, player.yTrans, player.zTrans);
                 quitTest.DrawText(&program, &modelMatrix);
                 
+            } else if (gameOver) {
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                retry.DrawText(&program, &modelMatrix);
+                modelMatrix.Translate(xPos, yPos, player.zTrans);
+                quitTest.DrawText(&program, &modelMatrix);
             }
             //if not paused do movements and collisions
             else {
@@ -689,6 +771,7 @@ int main(int argc, char *argv[])
         if(p1Shot) {p1Shot = !p1Shot;}
         if(p2Shot) {p2Shot = !p2Shot;}
         pastState = state;
+        pastGameState = gameOver;
         
         SDL_GL_SwapWindow(displayWindow);
         

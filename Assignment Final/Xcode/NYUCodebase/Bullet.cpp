@@ -53,6 +53,8 @@ void Bullet::checkReset() {
         reset = false;
     } else {
         reset = true;
+    } if (xTrans == 0) {
+        reset = true;
     }
 }
 
